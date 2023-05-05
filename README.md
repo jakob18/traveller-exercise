@@ -1,5 +1,5 @@
 # TRAVELLERS API
-
+- Missing - Spring Security: "API should be secured for ‘service to service’ communication"
 
 
 
@@ -11,5 +11,3 @@
 *    database: `travellers`
 *    app username: `bmj`
 *    app password: `LetMeIn`
-
-## Docker to DB

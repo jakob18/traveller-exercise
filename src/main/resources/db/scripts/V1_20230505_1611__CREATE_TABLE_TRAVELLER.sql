@@ -1,10 +1,11 @@
-CREATE TABLE TRAVELLER
+CREATE TABLE traveller
 (
-    id            BIGINT      NOT NULL AUTO_INCREMENT,
-    first_name    VARCHAR(50) NOT NULL,
-    last_name     VARCHAR(50) NOT NULL,
-    date_of_birth DATE        NOT NULL,
-    email         VARCHAR(50) NOT NULL UNIQUE,
-    mobile_number VARCHAR(15) NOT NULL UNIQUE,
-    PRIMARY KEY (id)
+    ID            BIGINT      NOT NULL AUTO_INCREMENT,
+    FIRST_NAME    VARCHAR(50) NOT NULL,
+    LAST_NAME     VARCHAR(50) NOT NULL,
+    DATE_OF_BIRTH DATE        NOT NULL,
+    EMAIL         VARCHAR(50) NOT NULL UNIQUE,
+    MOBILE_NUMBER VARCHAR(15) NOT NULL UNIQUE,
+    IS_ACTIVE     BOOLEAN     NOT NULL DEFAULT false,
+    PRIMARY KEY (ID)
 );

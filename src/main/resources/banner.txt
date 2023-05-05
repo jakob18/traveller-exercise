@@ -1,0 +1,8 @@
+${AnsiColor.1}${AnsiBackground.233}  _______ _____       __      ________ _      _      ______ _____   _____            _____ _____${AnsiBackground.DEFAULT}
+${AnsiBackground.235} |__   __|  __ \     /\ \    / /  ____| |    | |    |  ____|  __ \ / ____|     /\   |  __ \_   _|${AnsiBackground.DEFAULT}
+${AnsiBackground.237}    | |  | |__) |   /  \ \  / /| |__  | |    | |    | |__  | |__) | (___      /  \  | |__) || |${AnsiBackground.DEFAULT}
+${AnsiBackground.239}    | |  |  _  /   / /\ \ \/ / |  __| | |    | |    |  __| |  _  / \___ \    / /\ \ |  ___/ | |${AnsiBackground.DEFAULT}
+${AnsiBackground.241}    | |  | | \ \  / ____ \  /  | |____| |____| |____| |____| | \ \ ____) |  / ____ \| |    _| |_${AnsiBackground.DEFAULT}
+${AnsiBackground.243}    |_|  |_|  \_\/_/    \_\/   |______|______|______|______|_|  \_\_____/  /_/    \_\_|   |_____|${AnsiBackground.DEFAULT}
+
+${AnsiBackground.DEFAULT}${AnsiColor.GREEN}:: Spring Boot ::  ${AnsiColor.DEFAULT}(${spring-boot.version})

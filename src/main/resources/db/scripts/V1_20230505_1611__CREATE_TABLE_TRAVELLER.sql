@@ -6,5 +6,6 @@ CREATE TABLE TRAVELLER
     date_of_birth DATE        NOT NULL,
     email         VARCHAR(50) NOT NULL UNIQUE,
     mobile_number VARCHAR(15) NOT NULL UNIQUE,
+    is_active     BOOLEAN     NOT NULL DEFAULT false,
     PRIMARY KEY (id)
 );

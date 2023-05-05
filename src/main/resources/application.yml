@@ -1,0 +1,34 @@
+spring:
+  datasource:
+    url: jdbc:mysql://live.db.server.org:3306/travellers
+    password: SomePassword
+    username: root
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+    open-in-view: false
+  flyway:
+    schemas: travellers
+    out-of-order: false
+    locations: "classpath:/db/scripts"
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:mysql://localhost:13308/travellers?createDatabaseIfNotExist=true
+    password: LetMeIn2023
+    username: root
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+server:
+  port: 8081

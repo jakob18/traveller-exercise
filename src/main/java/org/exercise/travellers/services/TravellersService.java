@@ -1,6 +1,7 @@
 package org.exercise.travellers.services;
 
 import org.exercise.travellers.dto.TravellerDto;
+import org.exercise.travellers.entities.Traveller;
 
 public interface TravellersService {
 
@@ -12,7 +13,7 @@ public interface TravellersService {
      * @param searchValue - the value to be searched on the database, can be email, mobile or document
      * @return the Traveller Dto
      */
-    TravellerDto getTraveller(String searchValue);
+    Traveller getTraveller(String searchValue);
 
     /**
      * Create Traveller, where the following data should be accepted:

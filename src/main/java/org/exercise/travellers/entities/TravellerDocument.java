@@ -2,6 +2,9 @@ package org.exercise.travellers.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,7 +26,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "TRAVELLER")
+@Table(name = "traveller_document")
 public class TravellerDocument implements Serializable {
 
     @Serial
@@ -35,6 +38,7 @@ public class TravellerDocument implements Serializable {
     @Column(nullable = false, updatable = false)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "DOCUMENT_TYPE", nullable = false, updatable = false)
     private DocumentTypeEnum documentType;
 
@@ -47,7 +51,7 @@ public class TravellerDocument implements Serializable {
     @Column(name = "IS_ACTIVE", nullable = false, updatable = false)
     private boolean isActive;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TRAVELLER_ID", referencedColumnName = "id", nullable = false)
     private Traveller traveller;
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.exercise.travellers.dto.TravellerDocumentDto;
 import org.exercise.travellers.dto.TravellerDto;
+import org.exercise.travellers.entities.Traveller;
+import org.exercise.travellers.entities.TravellerDocument;
 import org.exercise.travellers.enums.DocumentTypeEnum;
 import org.exercise.travellers.services.TravellersService;
 import org.junit.jupiter.api.Test;
@@ -16,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Date;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -40,7 +43,7 @@ class TravellerControllerTest {
 
     @Test
     void getTraveller() throws Exception {
-        when(travellersService.getTraveller(anyString())).thenReturn(getDto());
+        when(travellersService.getTraveller(anyString())).thenReturn(getEntity());
 
         final ResultActions result = this.mockMvc.perform(
                 get(CONTROLLER_PATH)
@@ -56,7 +59,7 @@ class TravellerControllerTest {
 
         assertThat(getResult.firstName()).isEqualTo("bruno");
         assertThat(getResult.lastName()).isEqualTo("jacob");
-        assertThat(getResult.email()).isEqualTo("ewail@portugal.pt");
+        assertThat(getResult.email()).isEqualTo("email@portugal.pt");
         assertThat(getResult.mobileNumber()).isEqualTo(931234567);
         assertThat(getResult.travellerDocumentDto()).isNotNull();
     }
@@ -74,8 +77,25 @@ class TravellerControllerTest {
 
     // TODO - more tests
 
-    private TravellerDto getDto() {
-        return new TravellerDto("bruno", "jacob", new Date(System.currentTimeMillis()), "ewail@portugal.pt", 931234567, new TravellerDocumentDto(DocumentTypeEnum.ID_CARD, 123, "Portugal"));
+    private Traveller getEntity() {
+        TravellerDocument entityDocument = new TravellerDocument();
+        entityDocument.setId(1L);
+        entityDocument.setDocumentType(DocumentTypeEnum.ID_CARD);
+        entityDocument.setDocumentNumber("123456");
+        entityDocument.setIssuingCountry("Portugal");
+        entityDocument.setActive(true);
+
+        Traveller entity = new Traveller();
+        entity.setId(1L);
+        entity.setFirstName("bruno");
+        entity.setLastName("jacob");
+        entity.setBirthDate(new Date(System.currentTimeMillis()));
+        entity.setEmail("email@portugal.pt");
+        entity.setMobileNumber(931234567);
+        entity.setActive(true);
+        entity.setTravellerDocuments(List.of(entityDocument));
+
+        return entity;
     }
 
 

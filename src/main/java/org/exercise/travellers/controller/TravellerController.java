@@ -2,6 +2,7 @@ package org.exercise.travellers.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.exercise.travellers.parser.TravellerParser;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +27,7 @@ public class TravellerController {
     @GetMapping()
     public TravellerDto getTraveller(@RequestParam String searchValue) {
         log.info("Search for the traveller with: " + searchValue);
-        return travellersService.getTraveller(searchValue);
+        return TravellerParser.toDto(travellersService.getTraveller(searchValue));
     }
 
     @PostMapping

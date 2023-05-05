@@ -1,6 +1,6 @@
 package org.exercise.travellers.services;
 
-import org.exercise.travellers.dto.TravellerDto;
+import org.exercise.travellers.dto.CreateTravellerDto;
 import org.exercise.travellers.entities.Traveller;
 
 public interface TravellersService {
@@ -24,19 +24,19 @@ public interface TravellersService {
      * One unique document can be assigned to only one Traveller.
      * Email, Mobile Number and Document are unique and can be assigned to only one Traveller
      *
-     * @param travellerDto the object to be created on the DB
+     * @param createTravellerDto the object to be created on the DB
      * @return the object created
      */
-    TravellerDto addTraveller(TravellerDto travellerDto);
+    Traveller addTraveller(CreateTravellerDto createTravellerDto);
 
     /**
      * Accepts the same data as in case of Create Traveller operation
      * Deactivated Travellers can’t be updated
      *
-     * @param travellerDto the object to be updated on the DB
+     * @param updateTravellerDto the object to be updated on the DB
      * @return the object updated
      */
-    TravellerDto updateTraveller(TravellerDto travellerDto);
+    Traveller updateTraveller(CreateTravellerDto updateTravellerDto);
 
     /**
      * Operation should disable the Traveller, so it can’t be retrieved through any API operation, but the data will stay in Database.

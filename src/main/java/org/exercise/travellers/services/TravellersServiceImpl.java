@@ -2,16 +2,19 @@ package org.exercise.travellers.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.exercise.travellers.dto.TravellerDocumentDto;
-import org.exercise.travellers.dto.TravellerDto;
+import org.exercise.travellers.dto.CreateTravellerDto;
 import org.exercise.travellers.entities.Traveller;
+import org.exercise.travellers.entities.TravellerDocument;
 import org.exercise.travellers.enums.DocumentTypeEnum;
+import org.exercise.travellers.exception.DuplicatedResourcesException;
 import org.exercise.travellers.exception.TravellerNotFoundException;
+import org.exercise.travellers.parser.TravellerDocumentParser;
+import org.exercise.travellers.parser.TravellerParser;
+import org.exercise.travellers.repository.TravellerDocumentRepository;
 import org.exercise.travellers.repository.TravellerRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -20,6 +23,7 @@ import java.util.Optional;
 public class TravellersServiceImpl implements TravellersService {
 
     private final TravellerRepository travellerRepository;
+    private final TravellerDocumentRepository travellerDocumentRepository;
 
     @Override
     public Traveller getTraveller(String searchValue) {
@@ -59,25 +63,48 @@ public class TravellersServiceImpl implements TravellersService {
     }
 
     @Override
-    public TravellerDto addTraveller(TravellerDto travellerDto) {
-        log.info("Service Implementation ADD");
-        return mockTraveller();
+    public Traveller addTraveller(CreateTravellerDto createTravellerDto) {
+        checkExistingValues(createTravellerDto);
+        Traveller traveller = createTraveller(createTravellerDto);
+        return travellerRepository.findById(traveller.getId()).orElseThrow(() -> new TravellerNotFoundException("Couldn't find the new traveller with the Id: " + traveller.getId()));
+    }
+
+    private void checkExistingValues(CreateTravellerDto createTravellerDto) {
+        if (travellerRepository.existsByEmailAndIsActiveTrue(createTravellerDto.getEmail())) {
+            throw new DuplicatedResourcesException("The email: " + createTravellerDto.getEmail() + " already exists");
+        }
+
+        if (travellerRepository.existsByMobileNumberAndIsActiveTrue(String.valueOf(createTravellerDto.getMobileNumber()))) {
+            throw new DuplicatedResourcesException("The Mobile Number: " + createTravellerDto.getMobileNumber() + " already exists");
+        }
+
+        if (travellerDocumentRepository.existsByDocumentTypeAndDocumentNumberAndIssuingCountryAndIsActiveTrue(createTravellerDto.getDocumentTypeEnum(), createTravellerDto.getDocumentNumber(), createTravellerDto.getIssuingCountry())) {
+            throw new DuplicatedResourcesException("The Traveller Document: " + createTravellerDto.getDocumentNumber() + " - " +
+                                                           createTravellerDto.getDocumentTypeEnum() + " - " + createTravellerDto.getIssuingCountry() + " already exists");
+        }
+    }
+
+    private Traveller createTraveller(CreateTravellerDto createTravellerDto) {
+        Traveller savedTraveller = travellerRepository.save(TravellerParser.toEntity(createTravellerDto));
+        createTravelerDocument(savedTraveller, createTravellerDto);
+        return savedTraveller;
+    }
+
+    private void createTravelerDocument(Traveller savedTraveller, CreateTravellerDto createTravellerDto) {
+        TravellerDocument newTravellerDocument = TravellerDocumentParser.toEntity(createTravellerDto);
+        newTravellerDocument.setTraveller(savedTraveller);
+        travellerDocumentRepository.save(newTravellerDocument);
     }
 
     @Override
-    public TravellerDto updateTraveller(TravellerDto travellerDto) {
+    public Traveller updateTraveller(CreateTravellerDto travellerDto) {
         log.info("Service Implementation UPDATE");
-        return mockTraveller();
+        return null;
     }
 
     @Override
     public void deleteTraveller(String id) {
         log.info("Service Implementation DELETE");
-    }
-
-
-    private TravellerDto mockTraveller() {
-        return new TravellerDto("bruno", "jacob", new Date(System.currentTimeMillis()), "ewail@portugal.pt", 931234567, new TravellerDocumentDto(DocumentTypeEnum.ID_CARD, "123", "Portugal"));
     }
 
 }

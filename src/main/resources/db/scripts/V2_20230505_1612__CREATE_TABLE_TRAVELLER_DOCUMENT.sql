@@ -8,6 +8,5 @@ CREATE TABLE traveller_document
     TRAVELLER_ID    BIGINT                                          NOT NULL,
     PRIMARY KEY (ID),
     UNIQUE KEY unique_document (DOCUMENT_TYPE, DOCUMENT_NUMBER, ISSUING_COUNTRY),
-    UNIQUE KEY unique_active_document (TRAVELLER_ID, IS_ACTIVE),
     FOREIGN KEY (TRAVELLER_ID) REFERENCES traveller (ID) ON DELETE CASCADE
 );

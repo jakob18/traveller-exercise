@@ -13,7 +13,6 @@ public interface TravellerRepository extends JpaRepository<Traveller, Long> {
 
     Optional<Traveller> findByMobileNumberAndIsActiveTrue(String mobile);
 
-
     @Query("""
         SELECT t 
         FROM Traveller t 
@@ -24,5 +23,11 @@ public interface TravellerRepository extends JpaRepository<Traveller, Long> {
         AND t.isActive = true
         """)
     Optional<Traveller> findByDocument(String documentNumber, DocumentTypeEnum documentType);
+
+
+    boolean existsByEmailAndIsActiveTrue(String email);
+
+    boolean existsByMobileNumberAndIsActiveTrue(String mobile);
+
 
 }

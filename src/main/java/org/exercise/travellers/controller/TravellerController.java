@@ -37,14 +37,13 @@ public class TravellerController {
     }
 
     @PutMapping
-    public TravellerDto updateTraveller(@RequestBody CreateTravellerDto updateTravellerDto) {
-        log.info("Update traveller with: " + updateTravellerDto.getFirstName());
+    public TravellerDto updateTraveller(@RequestBody TravellerDto updateTravellerDto) {
+        log.info("Update traveller with: " + updateTravellerDto.firstName());
         return TravellerParser.toDto(travellersService.updateTraveller(updateTravellerDto));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTraveller(@PathVariable String id) {
-        log.info("Delete traveller with id: " + id);
+    public void deleteTraveller(@PathVariable Long id) {
         travellersService.deleteTraveller(id);
     }
 }

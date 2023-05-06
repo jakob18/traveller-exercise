@@ -1,6 +1,7 @@
 package org.exercise.travellers.controller;
 
 import org.exercise.travellers.exception.DuplicatedResourcesException;
+import org.exercise.travellers.exception.TravellerDeactivatedException;
 import org.exercise.travellers.exception.TravellerNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,11 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
     @ExceptionHandler(DuplicatedResourcesException.class)
     public ResponseEntity<Object> handleDuplicatedResourcesException(DuplicatedResourcesException ex){
         return new ResponseEntity<>(createResponse(ex), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(TravellerDeactivatedException.class)
+    public ResponseEntity<Object> handleTravellerDeactivatedException(TravellerDeactivatedException ex){
+        return new ResponseEntity<>(createResponse(ex), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     private Map<String, Object> createResponse(RuntimeException ex) {

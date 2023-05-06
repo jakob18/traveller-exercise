@@ -27,7 +27,7 @@ public interface TravellerRepository extends JpaRepository<Traveller, Long> {
 
     boolean existsByEmailAndIsActiveTrue(String email);
 
-    boolean existsByMobileNumberAndIsActiveTrue(String mobile);
+    boolean existsByMobileNumberAndIsActiveTrue(int mobile);
 
 
 }

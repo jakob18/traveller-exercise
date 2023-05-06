@@ -13,7 +13,7 @@ public class TravellerParser {
     }
 
     public static TravellerDto toDto(Traveller entity) {
-        return new TravellerDto(entity.getFirstName(), entity.getLastName(), entity.getBirthDate(), entity.getEmail(), entity.getMobileNumber(), getTravellerDocument(entity.getActiveDocument()));
+        return new TravellerDto(entity.getId(), entity.getFirstName(), entity.getLastName(), entity.getBirthDate(), entity.getEmail(), entity.getMobileNumber(), getTravellerDocument(entity.getActiveDocument()));
     }
 
     private static TravellerDocumentDto getTravellerDocument(TravellerDocument travellerDocument) {

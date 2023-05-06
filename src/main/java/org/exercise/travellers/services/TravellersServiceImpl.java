@@ -11,6 +11,7 @@ import org.exercise.travellers.exception.TravellerDeactivatedException;
 import org.exercise.travellers.exception.TravellerNotFoundException;
 import org.exercise.travellers.parser.TravellerParser;
 import org.exercise.travellers.repository.TravellerRepository;
+import org.exercise.travellers.utils.SqlInjectionRegex;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -72,13 +73,13 @@ public class TravellersServiceImpl implements TravellersService {
     }
 
     private void checkExistingEmail(String email) {
-        if (travellerRepository.existsByEmailAndIsActiveTrue(email)) {
+        if (travellerRepository.existsByEmail(email)) {
             throw new DuplicatedResourcesException("The email: " + email + " already exists");
         }
     }
 
     private void checkExistingMobileNumber(int mobileNumber) {
-        if (travellerRepository.existsByMobileNumberAndIsActiveTrue(mobileNumber)) {
+        if (travellerRepository.existsByMobileNumber(mobileNumber)) {
             throw new DuplicatedResourcesException("The Mobile Number: " + mobileNumber + " already exists");
         }
     }
@@ -113,15 +114,19 @@ public class TravellersServiceImpl implements TravellersService {
 
     private Traveller updateTraveller(Traveller oldTravellerData, TravellerDto newTravellerData) {
         try {
-            oldTravellerData.setFirstName(newTravellerData.firstName());
-            oldTravellerData.setLastName(newTravellerData.lastName());
+            oldTravellerData.setFirstName(sqlInjectionPrevention(newTravellerData.firstName()));
+            oldTravellerData.setLastName(sqlInjectionPrevention(newTravellerData.lastName()));
             oldTravellerData.setBirthDate(newTravellerData.birthDate());
-            oldTravellerData.setEmail(newTravellerData.email());
+            oldTravellerData.setEmail(sqlInjectionPrevention(newTravellerData.email()));
             oldTravellerData.setMobileNumber(newTravellerData.mobileNumber());
             return travellerRepository.save(oldTravellerData);
         } catch (Exception ex) {
             throw new DuplicatedResourcesException(ex.getLocalizedMessage());
         }
+    }
+
+    private String sqlInjectionPrevention(String value) {
+        return value.replaceAll(SqlInjectionRegex.getRegex(), "");
     }
 
     @Override

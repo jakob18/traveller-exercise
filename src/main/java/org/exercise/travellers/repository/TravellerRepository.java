@@ -25,9 +25,9 @@ public interface TravellerRepository extends JpaRepository<Traveller, Long> {
     Optional<Traveller> findByDocument(String documentNumber, DocumentTypeEnum documentType);
 
 
-    boolean existsByEmailAndIsActiveTrue(String email);
+    boolean existsByEmail(String email);
 
-    boolean existsByMobileNumberAndIsActiveTrue(int mobile);
+    boolean existsByMobileNumber(int mobile);
 
     Optional<Traveller> findByIdAndIsActiveTrue(long id);
 

@@ -29,5 +29,6 @@ public interface TravellerRepository extends JpaRepository<Traveller, Long> {
 
     boolean existsByMobileNumberAndIsActiveTrue(int mobile);
 
+    Optional<Traveller> findByIdAndIsActiveTrue(long id);
 
 }

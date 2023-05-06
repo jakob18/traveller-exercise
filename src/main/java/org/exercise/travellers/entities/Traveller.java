@@ -1,6 +1,5 @@
 package org.exercise.travellers.entities;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -56,7 +55,7 @@ public class Traveller implements Serializable {
     @Column(name = "IS_ACTIVE", nullable = false)
     private boolean isActive;
 
-    @OneToMany(mappedBy = "traveller", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "traveller", fetch = FetchType.EAGER)
     private List<TravellerDocument> travellerDocuments = new ArrayList<>();
 
     public TravellerDocument getActiveDocument() {

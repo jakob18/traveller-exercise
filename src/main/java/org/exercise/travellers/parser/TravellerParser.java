@@ -7,10 +7,8 @@ import org.exercise.travellers.entities.Traveller;
 import org.exercise.travellers.entities.TravellerDocument;
 
 
-public class TravellerParser {
-
-    private TravellerParser() {
-    }
+public class TravellerParser extends CommonParser {
+    private TravellerParser() {}
 
     public static TravellerDto toDto(Traveller entity) {
         return new TravellerDto(entity.getId(), entity.getFirstName(), entity.getLastName(), entity.getBirthDate(), entity.getEmail(), entity.getMobileNumber(), getTravellerDocument(entity.getActiveDocument()));
@@ -22,10 +20,10 @@ public class TravellerParser {
 
     public static Traveller toEntity(CreateTravellerDto dto) {
         Traveller entity = new Traveller();
-        entity.setFirstName(dto.getFirstName());
-        entity.setLastName(dto.getLastNAme());
+        entity.setFirstName(sqlInjectionPrevention(dto.getFirstName()));
+        entity.setLastName(sqlInjectionPrevention(dto.getLastNAme()));
         entity.setBirthDate(dto.getBirthDate());
-        entity.setEmail(dto.getEmail());
+        entity.setEmail(sqlInjectionPrevention(dto.getEmail()));
         entity.setMobileNumber(dto.getMobileNumber());
         entity.setActive(true);
         return entity;

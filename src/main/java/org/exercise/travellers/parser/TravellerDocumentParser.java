@@ -4,10 +4,9 @@ import org.exercise.travellers.dto.CreateTravellerDto;
 import org.exercise.travellers.dto.TravellerDocumentDto;
 import org.exercise.travellers.entities.TravellerDocument;
 
-public class TravellerDocumentParser {
+public class TravellerDocumentParser extends CommonParser {
 
-    private TravellerDocumentParser() {
-    }
+    private TravellerDocumentParser() {}
 
     public static TravellerDocumentDto toDto(TravellerDocument entity) {
         return new TravellerDocumentDto(entity.getDocumentType(), entity.getDocumentNumber(), entity.getIssuingCountry());
@@ -16,8 +15,8 @@ public class TravellerDocumentParser {
     public static TravellerDocument toEntity(CreateTravellerDto dto) {
         TravellerDocument entity = new TravellerDocument();
         entity.setDocumentType(dto.getDocumentTypeEnum());
-        entity.setDocumentNumber(dto.getDocumentNumber());
-        entity.setIssuingCountry(dto.getIssuingCountry());
+        entity.setDocumentNumber(sqlInjectionPrevention(dto.getDocumentNumber()));
+        entity.setIssuingCountry(sqlInjectionPrevention(dto.getIssuingCountry()));
         entity.setActive(true);
         return entity;
     }
@@ -25,8 +24,8 @@ public class TravellerDocumentParser {
     public static TravellerDocument toEntity(TravellerDocumentDto dto) {
         TravellerDocument entity = new TravellerDocument();
         entity.setDocumentType(dto.documentTypeEnum());
-        entity.setDocumentNumber(dto.documentNumber());
-        entity.setIssuingCountry(dto.issuingCountry());
+        entity.setDocumentNumber(sqlInjectionPrevention(dto.documentNumber()));
+        entity.setIssuingCountry(sqlInjectionPrevention(dto.issuingCountry()));
         entity.setActive(true);
         return entity;
     }

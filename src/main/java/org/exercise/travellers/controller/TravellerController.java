@@ -44,6 +44,7 @@ public class TravellerController {
 
     @DeleteMapping("/{id}")
     public void deleteTraveller(@PathVariable Long id) {
+        log.info("Deleting traveller with id: " + id);
         travellersService.deleteTraveller(id);
     }
 }

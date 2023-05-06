@@ -8,6 +8,9 @@ public abstract class CommonParser {
     }
 
     protected static String sqlInjectionPrevention(String value) {
-        return value.replaceAll(SqlInjectionRegex.getRegex(), "");
+        if (null != value) {
+            return value.replaceAll(SqlInjectionRegex.getRegex(), "");
+        }
+        return null;
     }
 }

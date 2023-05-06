@@ -1,6 +1,7 @@
 package org.exercise.travellers.services;
 
 import org.exercise.travellers.dto.CreateTravellerDto;
+import org.exercise.travellers.dto.TravellerDto;
 import org.exercise.travellers.entities.Traveller;
 
 public interface TravellersService {
@@ -36,13 +37,13 @@ public interface TravellersService {
      * @param updateTravellerDto the object to be updated on the DB
      * @return the object updated
      */
-    Traveller updateTraveller(CreateTravellerDto updateTravellerDto);
+    Traveller updateTraveller(TravellerDto updateTravellerDto);
 
     /**
      * Operation should disable the Traveller, so it can’t be retrieved through any API operation, but the data will stay in Database.
      *
      * @param id the id to be disabled
      */
-    void deleteTraveller(String id);
+    void deleteTraveller(Long id);
 
 }

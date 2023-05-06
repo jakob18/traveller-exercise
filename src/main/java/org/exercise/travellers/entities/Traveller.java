@@ -57,7 +57,7 @@ public class Traveller implements Serializable {
     private boolean isActive;
 
     @OneToMany(mappedBy = "traveller", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    public List<TravellerDocument> travellerDocuments = new ArrayList<>();
+    private List<TravellerDocument> travellerDocuments = new ArrayList<>();
 
     public TravellerDocument getActiveDocument() {
         return travellerDocuments.stream()

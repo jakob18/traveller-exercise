@@ -22,4 +22,13 @@ public class TravellerDocumentParser {
         return entity;
     }
 
+    public static TravellerDocument toEntity(TravellerDocumentDto dto) {
+        TravellerDocument entity = new TravellerDocument();
+        entity.setDocumentType(dto.documentTypeEnum());
+        entity.setDocumentNumber(dto.documentNumber());
+        entity.setIssuingCountry(dto.issuingCountry());
+        entity.setActive(true);
+        return entity;
+    }
+
 }

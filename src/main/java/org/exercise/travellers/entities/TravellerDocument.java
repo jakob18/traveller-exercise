@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -48,10 +47,10 @@ public class TravellerDocument implements Serializable {
     @Column(name = "ISSUING_COUNTRY", nullable = false, updatable = false)
     private String issuingCountry;
 
-    @Column(name = "IS_ACTIVE", nullable = false, updatable = false)
+    @Column(name = "IS_ACTIVE", nullable = false)
     private boolean isActive;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "TRAVELLER_ID", referencedColumnName = "id", nullable = false)
     private Traveller traveller;
 }

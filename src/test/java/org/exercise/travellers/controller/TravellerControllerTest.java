@@ -21,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -235,7 +236,7 @@ class TravellerControllerTest {
         entity.setId(1L);
         entity.setFirstName("bruno");
         entity.setLastName("jacob");
-        entity.setBirthDate(new Date(1982, 01, 19));
+        entity.setBirthDate(new Date(1982, Calendar.JANUARY, 19));
         entity.setEmail("email@portugal.pt");
         entity.setMobileNumber(931234567);
         entity.setActive(true);

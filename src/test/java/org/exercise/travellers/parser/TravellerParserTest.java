@@ -7,6 +7,7 @@ import org.exercise.travellers.entities.TravellerDocument;
 import org.exercise.travellers.enums.DocumentTypeEnum;
 import org.junit.jupiter.api.Test;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -51,7 +52,7 @@ class TravellerParserTest {
         entity.setId(1L);
         entity.setFirstName("Bruno");
         entity.setLastName("Jacob");
-        entity.setBirthDate(new Date(1982, 01, 19));
+        entity.setBirthDate(new Date(1982, Calendar.JANUARY, 19));
         entity.setEmail("bruno.jacob@portugal.pt");
         entity.setMobileNumber(931444555);
         entity.setActive(true);

@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -111,7 +112,7 @@ class TravellersDocumentServiceImplTest {
         entity.setId(1L);
         entity.setFirstName("Bruno");
         entity.setLastName("Jacob");
-        entity.setBirthDate(new Date(1982, 01, 19));
+        entity.setBirthDate(new Date(1982, Calendar.JANUARY, 19));
         entity.setEmail("bruno.jacob@portugal.pt");
         entity.setMobileNumber(931444555);
         entity.setActive(true);

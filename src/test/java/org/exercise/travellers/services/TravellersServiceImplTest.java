@@ -150,7 +150,7 @@ class TravellersServiceImplTest {
     void updateTraveller() {
         Traveller update = getTraveller();
         update.setLastName("Miguel");
-        TravellerDto updateDto = new TravellerDto(1L, "Bruno", "Miguel", new Date(1982,01,19), "bruno.jacob@portugal.pt", 931234567, new TravellerDocumentDto(DocumentTypeEnum.ID_CARD, "123456", "Portugal"));
+        TravellerDto updateDto = new TravellerDto(1L, "Bruno", "Miguel", new Date(1982,Calendar.JANUARY,19), "bruno.jacob@portugal.pt", 931234567, new TravellerDocumentDto(DocumentTypeEnum.ID_CARD, "123456", "Portugal"));
 
         when(travellerRepository.findById(any())).thenReturn(Optional.of(getTraveller()));
         doNothing().when(travellersDocumentService).updateTravellerDocument(any(), any());
@@ -188,7 +188,7 @@ class TravellersServiceImplTest {
     void updateTravellerSaveException() {
         Traveller update = getTraveller();
         update.setLastName("Miguel");
-        TravellerDto updateDto = new TravellerDto(1L, "Bruno", "Miguel", new Date(1982,01,19), "bruno.jacob@portugal.pt", 931234567, new TravellerDocumentDto(DocumentTypeEnum.ID_CARD, "123456", "Portugal"));
+        TravellerDto updateDto = new TravellerDto(1L, "Bruno", "Miguel", new Date(1982,Calendar.JANUARY,19), "bruno.jacob@portugal.pt", 931234567, new TravellerDocumentDto(DocumentTypeEnum.ID_CARD, "123456", "Portugal"));
 
         when(travellerRepository.findById(any())).thenReturn(Optional.of(getTraveller()));
         doNothing().when(travellersDocumentService).updateTravellerDocument(any(), any());
@@ -247,7 +247,7 @@ class TravellersServiceImplTest {
     }
 
     private CreateTravellerDto getCreateTravellerDto() {
-        return new CreateTravellerDto("bruno", "jacob", new Date(1982, 01, 19), "bruno.jacob@portugal.pt", 931234567, DocumentTypeEnum.ID_CARD, "123456", "Portugal");
+        return new CreateTravellerDto("bruno", "jacob", new Date(1982, Calendar.JANUARY, 19), "bruno.jacob@portugal.pt", 931234567, DocumentTypeEnum.ID_CARD, "123456", "Portugal");
     }
 
     private TravellerDto getTravellerDto() {

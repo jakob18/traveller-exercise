@@ -131,7 +131,7 @@ class TravellersDocumentServiceImplTest {
     }
 
     private CreateTravellerDto getCreateTravellerDto() {
-        return new CreateTravellerDto("bruno", "jacob", new Date(1982, 01, 19), "bruno.jacob@portugal.pt", 931234567, DocumentTypeEnum.ID_CARD, "123456", "Portugal");
+        return new CreateTravellerDto("bruno", "jacob", new Date(1982, Calendar.JANUARY, 19), "bruno.jacob@portugal.pt", 931234567, DocumentTypeEnum.ID_CARD, "123456", "Portugal");
     }
 
     private TravellerDto getTravellerDto() {

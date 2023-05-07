@@ -25,7 +25,6 @@ public class TravellersServiceImpl implements TravellersService {
     private final TravellersDocumentService travellersDocumentService;
     private final TravellerRepository travellerRepository;
 
-
     @Override
     public Traveller getTraveller(String searchValue) {
         Optional<Traveller> traveller = Optional.empty();

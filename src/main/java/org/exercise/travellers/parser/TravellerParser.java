@@ -21,7 +21,7 @@ public class TravellerParser extends CommonParser {
     public static Traveller toEntity(CreateTravellerDto dto) {
         Traveller entity = new Traveller();
         entity.setFirstName(sqlInjectionPrevention(dto.getFirstName()));
-        entity.setLastName(sqlInjectionPrevention(dto.getLastNAme()));
+        entity.setLastName(sqlInjectionPrevention(dto.getLastName()));
         entity.setBirthDate(dto.getBirthDate());
         entity.setEmail(sqlInjectionPrevention(dto.getEmail()));
         entity.setMobileNumber(dto.getMobileNumber());

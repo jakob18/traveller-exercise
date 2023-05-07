@@ -10,6 +10,7 @@ import org.exercise.travellers.enums.DocumentTypeEnum;
 import org.exercise.travellers.exception.DuplicatedResourcesException;
 import org.exercise.travellers.exception.TravellerDeactivatedException;
 import org.exercise.travellers.exception.TravellerNotFoundException;
+import org.exercise.travellers.parser.TravellerParser;
 import org.exercise.travellers.services.TravellersService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,7 +99,6 @@ class TravellerControllerTest {
                 .andExpect(jsonPath("$.message", is("The traveller was not found")));
     }
 
-    // ADD
     @Test
     void addTraveller() throws Exception {
         when(travellersService.addTraveller(any())).thenReturn(getEntity());
@@ -151,7 +151,7 @@ class TravellerControllerTest {
 
         final ResultActions result = this.mockMvc.perform(
                 put(CONTROLLER_PATH)
-                        .content(objectMapper.writeValueAsString(createDto()))
+                        .content(objectMapper.writeValueAsString(getTravellerDto()))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -184,7 +184,7 @@ class TravellerControllerTest {
 
         this.mockMvc.perform(
                         put(CONTROLLER_PATH)
-                                .content(objectMapper.writeValueAsString(createDto()))
+                                .content(objectMapper.writeValueAsString(getTravellerDto()))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isUnprocessableEntity())
@@ -246,6 +246,10 @@ class TravellerControllerTest {
 
     private CreateTravellerDto createDto() {
         return new CreateTravellerDto("bruno", "jacob", new Date(1982, 01, 19), "email@portugal.pt", 931234567, DocumentTypeEnum.ID_CARD, "123456", "Portugal");
+    }
+
+    private TravellerDto getTravellerDto() {
+        return TravellerParser.toDto(getEntity());
     }
 
 

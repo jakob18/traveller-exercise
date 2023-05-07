@@ -4,7 +4,6 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,14 +23,12 @@ public class CreateTravellerDto {
     private String firstName;
     @NotBlank
     @Size(min = 1, max = 50)
-    private String lastNAme;
+    private String lastName;
     @NotNull
-    @Past
     private Date birthDate;
     @NotBlank
     @Email
     private String email;
-
     @Digits(integer = 15, fraction = 0)
     private int mobileNumber;
     @NotNull

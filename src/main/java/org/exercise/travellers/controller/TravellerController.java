@@ -1,5 +1,6 @@
 package org.exercise.travellers.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.exercise.travellers.dto.CreateTravellerDto;
@@ -31,13 +32,13 @@ public class TravellerController {
     }
 
     @PostMapping
-    public TravellerDto addTraveller(@RequestBody CreateTravellerDto createTravellerDto) {
+    public TravellerDto addTraveller(@Valid @RequestBody CreateTravellerDto createTravellerDto) {
         log.info("Add traveller with: " + createTravellerDto.getFirstName());
         return TravellerParser.toDto(travellersService.addTraveller(createTravellerDto));
     }
 
     @PutMapping
-    public TravellerDto updateTraveller(@RequestBody TravellerDto updateTravellerDto) {
+    public TravellerDto updateTraveller(@Valid @RequestBody TravellerDto updateTravellerDto) {
         log.info("Update traveller with: " + updateTravellerDto.firstName());
         return TravellerParser.toDto(travellersService.updateTraveller(updateTravellerDto));
     }

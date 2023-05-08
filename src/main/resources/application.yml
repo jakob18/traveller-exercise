@@ -30,5 +30,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  security:
+    user:
+      name: service
+      password: s$rv1c$2ol3!
 server:
   port: 8081

@@ -19,7 +19,7 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(TravellerNotFoundException.class)
     public ResponseEntity<Object> handleTravellerNotFoundException(TravellerNotFoundException ex) {
-        return new ResponseEntity<>(createResponse(ex), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(createResponse(ex), HttpStatus.NO_CONTENT);
     }
 
     @ExceptionHandler(DuplicatedResourcesException.class)

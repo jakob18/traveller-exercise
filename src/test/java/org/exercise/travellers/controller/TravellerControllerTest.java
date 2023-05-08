@@ -100,7 +100,7 @@ class TravellerControllerTest {
                                 .param("searchValue", "123")
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON)
-                ).andExpect(status().isNotFound())
+                ).andExpect(status().isNoContent())
                 .andExpect(jsonPath("$.message", is("The traveller was not found")));
     }
 
@@ -235,7 +235,7 @@ class TravellerControllerTest {
                                 .content(objectMapper.writeValueAsString(getTravellerDocumentDto()))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isNoContent())
                 .andExpect(jsonPath("$.message", is("The traveller was not found")));
 
     }
@@ -360,7 +360,7 @@ class TravellerControllerTest {
                         delete(CONTROLLER_PATH + "/1")
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON)
-                ).andExpect(status().isNotFound())
+                ).andExpect(status().isNoContent())
                 .andExpect(jsonPath("$.message", is("The Traveller was not found")));
     }
 

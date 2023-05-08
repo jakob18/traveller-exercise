@@ -1,6 +1,7 @@
 package org.exercise.travellers.services;
 
 import org.exercise.travellers.dto.CreateTravellerDto;
+import org.exercise.travellers.dto.TravellerDocumentDto;
 import org.exercise.travellers.dto.TravellerDto;
 import org.exercise.travellers.entities.Traveller;
 
@@ -15,6 +16,10 @@ public interface TravellersService {
      * @return the Traveller Dto
      */
     Traveller getTraveller(String searchValue);
+
+    Traveller getTravellerByEmail(String email);
+    Traveller getTravellerByMobile(int mobile);
+    Traveller getTravellerByDocument(TravellerDocumentDto document);
 
     /**
      * Create Traveller, where the following data should be accepted:

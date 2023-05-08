@@ -3,6 +3,7 @@ package org.exercise.travellers.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.exercise.travellers.dto.CreateTravellerDto;
+import org.exercise.travellers.dto.TravellerDocumentDto;
 import org.exercise.travellers.dto.TravellerDto;
 import org.exercise.travellers.entities.Traveller;
 import org.exercise.travellers.enums.DocumentTypeEnum;
@@ -32,14 +33,38 @@ public class TravellersServiceImpl implements TravellersService {
         if (isEmail(searchValue)) {
             traveller = travellerRepository.findByEmailAndIsActiveTrue(searchValue);
         } else if (isMobile(searchValue)) {
-            traveller = travellerRepository.findByMobileNumberAndIsActiveTrue(searchValue);
+            traveller = travellerRepository.findByMobileNumberAndIsActiveTrue(Integer.parseInt(searchValue));
         } else if (isDocument(searchValue)) {
+            // I assume that the received document comes on a simple string "DOCUMENTTYPE+DOCUMENTNUMBER"
             DocumentTypeEnum documentType = getDocumentType(searchValue);
             String documentNumber = searchValue.substring(documentType.toString().length());
             traveller = travellerRepository.findByDocument(documentNumber, documentType);
         }
 
         return traveller.orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the value: " + searchValue));
+    }
+
+    @Override
+    public Traveller getTravellerByEmail(String email) {
+        Optional<Traveller> traveller = Optional.empty();
+        if (isEmail(email)) {
+            traveller = travellerRepository.findByEmailAndIsActiveTrue(email);
+        }
+        return traveller.orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the email: " + email));
+    }
+
+    @Override
+    public Traveller getTravellerByMobile(int mobile) {
+        Optional<Traveller> traveller = Optional.empty();
+        if(isMobile(String.valueOf(mobile))) {
+            traveller = travellerRepository.findByMobileNumberAndIsActiveTrue(mobile);
+        }
+        return traveller.orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the mobile number: " + mobile));
+    }
+
+    @Override
+    public Traveller getTravellerByDocument(TravellerDocumentDto document) {
+        return travellerRepository.findByDocument(document.documentNumber(), document.documentTypeEnum(), document.issuingCountry()).orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the document: " + document));
     }
 
     private boolean isEmail(String value) {

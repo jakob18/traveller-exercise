@@ -6,6 +6,8 @@
 - If I had time, I would develop in TDD, or at least write the tests has I was developing, but like every project, we are always in the red when it comes to time to delivery...
 - In Spring Security I created with a Basic Authentication because it is a service to service communication, if it was a normal frontend to backend I would had used JWT
 - The username and password is on application.yml for DEV but for PROD it should be on system environment properties
+- Implement Reactive Programming with WebFlux
+- I don't like the approach of one get to the three types of data, so I created the three methods for the different gets
 
 # SQL
 ## Install MySQL from dockers

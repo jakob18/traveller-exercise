@@ -11,7 +11,7 @@ public interface TravellerRepository extends JpaRepository<Traveller, Long> {
 
     Optional<Traveller> findByEmailAndIsActiveTrue(String email);
 
-    Optional<Traveller> findByMobileNumberAndIsActiveTrue(String mobile);
+    Optional<Traveller> findByMobileNumberAndIsActiveTrue(int mobile);
 
     @Query("""
         SELECT t 
@@ -23,6 +23,18 @@ public interface TravellerRepository extends JpaRepository<Traveller, Long> {
         AND t.isActive = true
         """)
     Optional<Traveller> findByDocument(String documentNumber, DocumentTypeEnum documentType);
+
+    @Query("""
+        SELECT t 
+        FROM Traveller t 
+        INNER JOIN t.travellerDocuments td 
+        WHERE td.documentNumber = :documentNumber 
+        AND td.documentType = :documentType 
+        AND td.issuingCountry = :issuingCountry
+        AND td.isActive = true 
+        AND t.isActive = true
+        """)
+    Optional<Traveller> findByDocument(String documentNumber, DocumentTypeEnum documentType, String issuingCountry);
 
 
     boolean existsByEmail(String email);

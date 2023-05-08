@@ -2,10 +2,10 @@
 
 # Notes
 - Because I used a MySQL database it is not possible to use: ``UNIQUE KEY unique_active_document (TRAVELLER_ID, IS_ACTIVE),`` only for ``Is_Active=true`` that means that I can't put a where clause just to the TRUE values, the solution is to use a TRIGGER, but I rather manage it on Java
-- Well I have an email or mobile number in one traveller, but the traveller is inactive, should I let another traveller use that email or mobile? I will not allow it until the Product Owner decide it
+- Doubt: I have an email or mobile number in one traveller, but the traveller is inactive, should I let another traveller use that email or mobile? I will not allow it until the Product Owner decide it
 - If I had time, I would develop in TDD, or at least write the tests has I was developing, but like every project, we are always in the red when it comes to time to delivery...
 - In Spring Security I created with a Basic Authentication because it is a service to service communication, if it was a normal frontend to backend I would had used JWT
-- The password is on application password but on PROD it should be on system environment properties
+- The username and password is on application.yml for DEV but for PROD it should be on system environment properties
 
 # SQL
 ## Install MySQL from dockers

@@ -7,8 +7,10 @@ import org.exercise.travellers.entities.Traveller;
 import org.exercise.travellers.entities.TravellerDocument;
 import org.exercise.travellers.enums.DocumentTypeEnum;
 import org.exercise.travellers.exception.DuplicatedResourcesException;
+import org.exercise.travellers.exception.InvalidEmailException;
 import org.exercise.travellers.exception.TravellerDeactivatedException;
 import org.exercise.travellers.exception.TravellerNotFoundException;
+import org.exercise.travellers.parser.TravellerDocumentParser;
 import org.exercise.travellers.parser.TravellerParser;
 import org.exercise.travellers.repository.TravellerRepository;
 import org.junit.jupiter.api.Test;
@@ -47,7 +49,7 @@ class TravellersServiceImplTest {
     private TravellersServiceImpl underTest;
 
     @Test
-    void getTravellerByEmail() {
+    void getTravellerSearchByEmail() {
         String searchValue = "bruno.jacob@portugal.pt";
 
         when(travellerRepository.findByEmailAndIsActiveTrue(anyString())).thenReturn(Optional.of(getTraveller()));
@@ -62,14 +64,14 @@ class TravellersServiceImplTest {
     }
 
     @Test
-    void getTravellerByMobile() {
+    void getTravellerSearchByMobile() {
         String searchValue = "931345666";
 
-        when(travellerRepository.findByMobileNumberAndIsActiveTrue(anyString())).thenReturn(Optional.of(getTraveller()));
+        when(travellerRepository.findByMobileNumberAndIsActiveTrue(anyInt())).thenReturn(Optional.of(getTraveller()));
 
         Traveller result = underTest.getTraveller(searchValue);
 
-        verify(travellerRepository).findByMobileNumberAndIsActiveTrue(searchValue);
+        verify(travellerRepository).findByMobileNumberAndIsActiveTrue(Integer.parseInt(searchValue));
         assertThat(result.getFirstName()).isEqualTo(getTraveller().getFirstName());
         assertThat(result.getLastName()).isEqualTo(getTraveller().getLastName());
         assertThat(result.getEmail()).isEqualTo(getTraveller().getEmail());
@@ -77,7 +79,7 @@ class TravellersServiceImplTest {
     }
 
     @Test
-    void getTravellerByDocument() {
+    void getTravellerSearchByDocument() {
         String searchValue = "PASSPORT1234";
 
         when(travellerRepository.findByDocument(anyString(), any())).thenReturn(Optional.of(getTraveller()));
@@ -99,6 +101,90 @@ class TravellersServiceImplTest {
 
         assertThrows(TravellerNotFoundException.class, () -> underTest.getTraveller(searchValue));
         verify(travellerRepository).findByEmailAndIsActiveTrue(searchValue);
+    }
+
+    @Test
+    void getTravellerByEmail() {
+        String email = "bruno.jacob@portugal.pt";
+
+        when(travellerRepository.findByEmailAndIsActiveTrue(anyString())).thenReturn(Optional.of(getTraveller()));
+
+        Traveller result = underTest.getTravellerByEmail(email);
+
+        verify(travellerRepository).findByEmailAndIsActiveTrue(email);
+        assertThat(result.getFirstName()).isEqualTo(getTraveller().getFirstName());
+        assertThat(result.getLastName()).isEqualTo(getTraveller().getLastName());
+        assertThat(result.getEmail()).isEqualTo(getTraveller().getEmail());
+        assertTrue(result.isActive());
+    }
+
+    @Test
+    void getTravellerByEmailInvalidEmail() {
+        String email = "bruno.jacob";
+
+        assertThrows(InvalidEmailException.class, () -> underTest.getTravellerByEmail(email));
+
+        verify(travellerRepository, times(0)).findByEmailAndIsActiveTrue(email);
+    }
+
+    @Test
+    void getTravellerByEmailNotFound() {
+        String email = "bruno.jacob@portugal.pt";
+
+        when(travellerRepository.findByEmailAndIsActiveTrue(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(TravellerNotFoundException.class, () -> underTest.getTravellerByEmail(email));
+        verify(travellerRepository).findByEmailAndIsActiveTrue(email);
+    }
+
+    @Test
+    void getTravellerByMobile() {
+        int mobile = 934441231;
+
+        when(travellerRepository.findByMobileNumberAndIsActiveTrue(anyInt())).thenReturn(Optional.of(getTraveller()));
+
+        Traveller result = underTest.getTravellerByMobile(mobile);
+
+        verify(travellerRepository).findByMobileNumberAndIsActiveTrue(mobile);
+        assertThat(result.getFirstName()).isEqualTo(getTraveller().getFirstName());
+        assertThat(result.getLastName()).isEqualTo(getTraveller().getLastName());
+        assertThat(result.getEmail()).isEqualTo(getTraveller().getEmail());
+        assertTrue(result.isActive());
+    }
+
+    @Test
+    void getTravellerByMobileNotFound() {
+        int mobile = 934441231;
+
+        when(travellerRepository.findByMobileNumberAndIsActiveTrue(anyInt())).thenReturn(Optional.empty());
+
+        assertThrows(TravellerNotFoundException.class, () -> underTest.getTravellerByMobile(mobile));
+        verify(travellerRepository).findByMobileNumberAndIsActiveTrue(mobile);
+    }
+
+    @Test
+    void getTravellerByDocument() {
+        TravellerDocumentDto travellerDocumentDto = TravellerDocumentParser.toDto(getTravellerDocument());
+
+        when(travellerRepository.findByDocument(anyString(), any(), anyString())).thenReturn(Optional.of(getTraveller()));
+
+        Traveller result = underTest.getTravellerByDocument(travellerDocumentDto);
+
+        verify(travellerRepository).findByDocument(travellerDocumentDto.documentNumber(), travellerDocumentDto.documentTypeEnum(), travellerDocumentDto.issuingCountry());
+        assertThat(result.getFirstName()).isEqualTo(getTraveller().getFirstName());
+        assertThat(result.getLastName()).isEqualTo(getTraveller().getLastName());
+        assertThat(result.getEmail()).isEqualTo(getTraveller().getEmail());
+        assertTrue(result.isActive());
+    }
+
+    @Test
+    void getTravellerByDocumentNotFound() {
+        TravellerDocumentDto travellerDocumentDto = TravellerDocumentParser.toDto(getTravellerDocument());
+
+        when(travellerRepository.findByDocument(anyString(), any(), anyString())).thenReturn(Optional.empty());
+
+        assertThrows(TravellerNotFoundException.class, () -> underTest.getTravellerByDocument(travellerDocumentDto));
+        verify(travellerRepository).findByDocument(travellerDocumentDto.documentNumber(), travellerDocumentDto.documentTypeEnum(), travellerDocumentDto.issuingCountry());
     }
 
     @Test

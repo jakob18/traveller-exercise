@@ -8,6 +8,7 @@ import org.exercise.travellers.dto.TravellerDto;
 import org.exercise.travellers.entities.Traveller;
 import org.exercise.travellers.enums.DocumentTypeEnum;
 import org.exercise.travellers.exception.DuplicatedResourcesException;
+import org.exercise.travellers.exception.InvalidEmailException;
 import org.exercise.travellers.exception.TravellerDeactivatedException;
 import org.exercise.travellers.exception.TravellerNotFoundException;
 import org.exercise.travellers.parser.TravellerParser;
@@ -46,25 +47,24 @@ public class TravellersServiceImpl implements TravellersService {
 
     @Override
     public Traveller getTravellerByEmail(String email) {
-        Optional<Traveller> traveller = Optional.empty();
+        Optional<Traveller> traveller;
         if (isEmail(email)) {
             traveller = travellerRepository.findByEmailAndIsActiveTrue(email);
+        } else {
+            throw new InvalidEmailException("The email: " + email + " is invalid");
         }
         return traveller.orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the email: " + email));
     }
 
     @Override
     public Traveller getTravellerByMobile(int mobile) {
-        Optional<Traveller> traveller = Optional.empty();
-        if(isMobile(String.valueOf(mobile))) {
-            traveller = travellerRepository.findByMobileNumberAndIsActiveTrue(mobile);
-        }
-        return traveller.orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the mobile number: " + mobile));
+        return travellerRepository.findByMobileNumberAndIsActiveTrue(mobile).orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the mobile number: " + mobile));
     }
 
     @Override
     public Traveller getTravellerByDocument(TravellerDocumentDto document) {
-        return travellerRepository.findByDocument(document.documentNumber(), document.documentTypeEnum(), document.issuingCountry()).orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the document: " + document));
+        return travellerRepository.findByDocument(document.documentNumber(), document.documentTypeEnum(), document.issuingCountry()).orElseThrow(
+                () -> new TravellerNotFoundException("There isn't an active Traveller with the document: " + document));
     }
 
     private boolean isEmail(String value) {

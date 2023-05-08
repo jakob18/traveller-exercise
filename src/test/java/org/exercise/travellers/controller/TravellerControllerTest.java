@@ -3,13 +3,16 @@ package org.exercise.travellers.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.exercise.travellers.dto.CreateTravellerDto;
+import org.exercise.travellers.dto.TravellerDocumentDto;
 import org.exercise.travellers.dto.TravellerDto;
 import org.exercise.travellers.entities.Traveller;
 import org.exercise.travellers.entities.TravellerDocument;
 import org.exercise.travellers.enums.DocumentTypeEnum;
 import org.exercise.travellers.exception.DuplicatedResourcesException;
+import org.exercise.travellers.exception.InvalidEmailException;
 import org.exercise.travellers.exception.TravellerDeactivatedException;
 import org.exercise.travellers.exception.TravellerNotFoundException;
+import org.exercise.travellers.parser.TravellerDocumentParser;
 import org.exercise.travellers.parser.TravellerParser;
 import org.exercise.travellers.services.TravellersService;
 import org.junit.jupiter.api.Test;
@@ -28,6 +31,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -101,12 +105,148 @@ class TravellerControllerTest {
     }
 
     @Test
+    void getTravellerByEmail() throws Exception {
+        when(travellersService.getTravellerByEmail(anyString())).thenReturn(getEntity());
+
+        final ResultActions result = this.mockMvc.perform(
+                get(CONTROLLER_PATH + "/by_email")
+                        .param("email", "test@portugal.pt")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isOk());
+
+        String content = result.andReturn().getResponse().getContentAsString();
+        TravellerDto getResult = objectMapper.readValue(content, new TypeReference<>() {
+        });
+
+        assertThat(getResult.firstName()).isEqualTo("bruno");
+        assertThat(getResult.lastName()).isEqualTo("jacob");
+        assertThat(getResult.email()).isEqualTo("email@portugal.pt");
+        assertThat(getResult.mobileNumber()).isEqualTo(931234567);
+        assertThat(getResult.travellerDocumentDto()).isNotNull();
+        assertThat(getResult.travellerDocumentDto().documentNumber()).isEqualTo("123456");
+    }
+
+    @Test
+    void getTravellerByEmailNullSearch() throws Exception {
+        this.mockMvc.perform(
+                get(CONTROLLER_PATH + "/by_email")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getTravellerByEmailInvalidEmail() throws Exception {
+        when(travellersService.getTravellerByEmail(any())).thenThrow(new InvalidEmailException("The email is invalid"));
+
+        this.mockMvc.perform(
+                        get(CONTROLLER_PATH + "/by_email")
+                                .param("email", "test")
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON)
+                ).andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("The email is invalid")));
+    }
+
+    @Test
+    void getTravellerByMobile() throws Exception {
+        when(travellersService.getTravellerByMobile(anyInt())).thenReturn(getEntity());
+
+        final ResultActions result = this.mockMvc.perform(
+                get(CONTROLLER_PATH + "/by_mobile")
+                        .param("mobile", "931234445")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isOk());
+
+        String content = result.andReturn().getResponse().getContentAsString();
+        TravellerDto getResult = objectMapper.readValue(content, new TypeReference<>() {
+        });
+
+        assertThat(getResult.firstName()).isEqualTo("bruno");
+        assertThat(getResult.lastName()).isEqualTo("jacob");
+        assertThat(getResult.email()).isEqualTo("email@portugal.pt");
+        assertThat(getResult.mobileNumber()).isEqualTo(931234567);
+        assertThat(getResult.travellerDocumentDto()).isNotNull();
+        assertThat(getResult.travellerDocumentDto().documentNumber()).isEqualTo("123456");
+    }
+
+    @Test
+    void getTravellerByMobileNullSearch() throws Exception {
+        this.mockMvc.perform(
+                get(CONTROLLER_PATH + "/by_mobile")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getTravellerByMobileInvalidMobile() throws Exception {
+        this.mockMvc.perform(
+                get(CONTROLLER_PATH + "/by_mobile")
+                        .param("mobile", "test")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getTravellerByDocument() throws Exception {
+        when(travellersService.getTravellerByDocument(any())).thenReturn(getEntity());
+
+        final ResultActions result = this.mockMvc.perform(
+                get(CONTROLLER_PATH + "/by_document")
+                        .content(objectMapper.writeValueAsString(getTravellerDocumentDto()))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isOk());
+
+        String content = result.andReturn().getResponse().getContentAsString();
+        TravellerDto getResult = objectMapper.readValue(content, new TypeReference<>() {
+        });
+
+        assertThat(getResult.firstName()).isEqualTo("bruno");
+        assertThat(getResult.lastName()).isEqualTo("jacob");
+        assertThat(getResult.email()).isEqualTo("email@portugal.pt");
+        assertThat(getResult.mobileNumber()).isEqualTo(931234567);
+        assertThat(getResult.travellerDocumentDto()).isNotNull();
+        assertThat(getResult.travellerDocumentDto().documentNumber()).isEqualTo("123456");
+    }
+
+    @Test
+    void getTravellerByDocumentNullSearch() throws Exception {
+        this.mockMvc.perform(
+                get(CONTROLLER_PATH + "/by_document")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getTravellerByDocumentInvalid() throws Exception {
+        when(travellersService.getTravellerByDocument(any())).thenThrow(new TravellerNotFoundException("The traveller was not found"));
+
+        final ResultActions result = this.mockMvc.perform(
+                        get(CONTROLLER_PATH + "/by_document")
+                                .content(objectMapper.writeValueAsString(getTravellerDocumentDto()))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", is("The traveller was not found")));
+
+    }
+
+    @Test
     void addTraveller() throws Exception {
         when(travellersService.addTraveller(any())).thenReturn(getEntity());
 
         final ResultActions result = this.mockMvc.perform(
                 post(CONTROLLER_PATH)
-                        .content(objectMapper.writeValueAsString(createDto()))
+                        .content(objectMapper.writeValueAsString(getCreateTravellerDto()))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -139,7 +279,7 @@ class TravellerControllerTest {
 
         this.mockMvc.perform(
                         post(CONTROLLER_PATH)
-                                .content(objectMapper.writeValueAsString(createDto()))
+                                .content(objectMapper.writeValueAsString(getCreateTravellerDto()))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isConflict())
@@ -225,13 +365,6 @@ class TravellerControllerTest {
     }
 
     private Traveller getEntity() {
-        TravellerDocument entityDocument = new TravellerDocument();
-        entityDocument.setId(1L);
-        entityDocument.setDocumentType(DocumentTypeEnum.ID_CARD);
-        entityDocument.setDocumentNumber("123456");
-        entityDocument.setIssuingCountry("Portugal");
-        entityDocument.setActive(true);
-
         Traveller entity = new Traveller();
         entity.setId(1L);
         entity.setFirstName("bruno");
@@ -240,12 +373,26 @@ class TravellerControllerTest {
         entity.setEmail("email@portugal.pt");
         entity.setMobileNumber(931234567);
         entity.setActive(true);
-        entity.setTravellerDocuments(List.of(entityDocument));
+        entity.setTravellerDocuments(List.of(getTravellerDocument()));
 
         return entity;
     }
 
-    private CreateTravellerDto createDto() {
+    private TravellerDocument getTravellerDocument() {
+        TravellerDocument entityDocument = new TravellerDocument();
+        entityDocument.setId(1L);
+        entityDocument.setDocumentType(DocumentTypeEnum.ID_CARD);
+        entityDocument.setDocumentNumber("123456");
+        entityDocument.setIssuingCountry("Portugal");
+        entityDocument.setActive(true);
+        return entityDocument;
+    }
+
+    private TravellerDocumentDto getTravellerDocumentDto() {
+        return TravellerDocumentParser.toDto(getTravellerDocument());
+    }
+
+    private CreateTravellerDto getCreateTravellerDto() {
         return new CreateTravellerDto("bruno", "jacob", new Date(1982, Calendar.JANUARY, 19), "email@portugal.pt", 931234567, DocumentTypeEnum.ID_CARD, "123456", "Portugal");
     }
 

@@ -28,6 +28,8 @@ import java.util.List;
 @Table(name = "traveller")
 public class Traveller implements Serializable {
 
+    public static final String SPEC_IS_ACTIVE = "isActive";
+
     @Serial
     private static final long serialVersionUID = -7880395848287219784L;
 

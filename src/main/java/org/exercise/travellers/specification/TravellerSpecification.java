@@ -26,13 +26,13 @@ public class TravellerSpecification extends BaseSpecification {
             Join<Traveller, TravellerDocument> travellerDocumentJoin = root.join("travellerDocuments");
 
             // Traveller filter
-            equalsBoolean("isActive", root, cb, predicates);
+            equalsBoolean(Traveller.SPEC_IS_ACTIVE, root, cb, predicates);
 
             // Traveller Documents filter
-            contains(documentNumber, "documentNumber", travellerDocumentJoin, cb, predicates);
-            contains(issuingCountry, "issuingCountry", travellerDocumentJoin, cb, predicates);
-            equals(documentType, "documentType", travellerDocumentJoin, cb, predicates);
-            equalsBoolean("isActive", travellerDocumentJoin, cb, predicates);
+            contains(documentNumber, TravellerDocument.SPEC_DOCUMENT_NUMBER, travellerDocumentJoin, cb, predicates);
+            contains(issuingCountry, TravellerDocument.SPEC_ISSUING_COUNTRY, travellerDocumentJoin, cb, predicates);
+            equals(documentType, TravellerDocument.SPEC_DOCUMENT_TYPE, travellerDocumentJoin, cb, predicates);
+            equalsBoolean(TravellerDocument.SPEC_IS_ACTIVE, travellerDocumentJoin, cb, predicates);
 
             return and(cb, predicates);
         });

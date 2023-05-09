@@ -28,6 +28,11 @@ import java.io.Serializable;
 @Table(name = "traveller_document")
 public class TravellerDocument implements Serializable {
 
+    public static final String SPEC_IS_ACTIVE = "isActive";
+    public static final String SPEC_DOCUMENT_TYPE = "documentType";
+    public static final String SPEC_DOCUMENT_NUMBER = "documentNumber";
+    public static final String SPEC_ISSUING_COUNTRY = "issuingCountry";
+
     @Serial
     private static final long serialVersionUID = -8597868587019861846L;
 

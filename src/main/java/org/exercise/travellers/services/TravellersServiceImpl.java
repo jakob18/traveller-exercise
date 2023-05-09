@@ -13,6 +13,7 @@ import org.exercise.travellers.exception.TravellerDeactivatedException;
 import org.exercise.travellers.exception.TravellerNotFoundException;
 import org.exercise.travellers.parser.TravellerParser;
 import org.exercise.travellers.repository.TravellerRepository;
+import org.exercise.travellers.specification.TravellerSpecification;
 import org.exercise.travellers.utils.SqlInjectionRegex;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ public class TravellersServiceImpl implements TravellersService {
 
     private final TravellersDocumentService travellersDocumentService;
     private final TravellerRepository travellerRepository;
+    private final TravellerSpecification travellerSpecification;
 
     @Override
     public Traveller getTraveller(String searchValue) {
@@ -39,7 +41,7 @@ public class TravellersServiceImpl implements TravellersService {
             // I assume that the received document comes on a simple string "DOCUMENTTYPE+DOCUMENTNUMBER"
             DocumentTypeEnum documentType = getDocumentType(searchValue);
             String documentNumber = searchValue.substring(documentType.toString().length());
-            traveller = travellerRepository.findByDocument(documentNumber, documentType);
+            traveller = travellerRepository.findOne(travellerSpecification.findOneByDocuments(documentNumber, documentType));
         }
 
         return traveller.orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the value: " + searchValue));
@@ -63,8 +65,9 @@ public class TravellersServiceImpl implements TravellersService {
 
     @Override
     public Traveller getTravellerByDocument(TravellerDocumentDto document) {
-        return travellerRepository.findByDocument(document.documentNumber(), document.documentTypeEnum(), document.issuingCountry()).orElseThrow(
-                () -> new TravellerNotFoundException("There isn't an active Traveller with the document: " + document));
+        return travellerRepository
+                .findOne(travellerSpecification.findOneByDocuments(document.documentNumber(), document.documentTypeEnum(), document.issuingCountry()))
+                .orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the document: " + document));
     }
 
     private boolean isEmail(String value) {

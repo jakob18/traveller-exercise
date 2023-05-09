@@ -13,10 +13,12 @@ import org.exercise.travellers.exception.TravellerNotFoundException;
 import org.exercise.travellers.parser.TravellerDocumentParser;
 import org.exercise.travellers.parser.TravellerParser;
 import org.exercise.travellers.repository.TravellerRepository;
+import org.exercise.travellers.specification.TravellerSpecification;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Calendar;
@@ -44,6 +46,9 @@ class TravellersServiceImplTest {
 
     @Mock
     private TravellersDocumentService travellersDocumentService;
+
+    @Mock
+    private TravellerSpecification travellerSpecification;
 
     @InjectMocks
     private TravellersServiceImpl underTest;
@@ -82,11 +87,12 @@ class TravellersServiceImplTest {
     void getTravellerSearchByDocument() {
         String searchValue = "PASSPORT1234";
 
-        when(travellerRepository.findByDocument(anyString(), any())).thenReturn(Optional.of(getTraveller()));
+        when(travellerRepository.findOne((Specification<Traveller>) null)).thenReturn(Optional.of(getTraveller()));
+        when(travellerSpecification.findOneByDocuments(anyString(), any())).thenReturn(null);
 
         Traveller result = underTest.getTraveller(searchValue);
 
-        verify(travellerRepository).findByDocument("1234", DocumentTypeEnum.PASSPORT);
+        verify(travellerSpecification).findOneByDocuments("1234", DocumentTypeEnum.PASSPORT);
         assertThat(result.getFirstName()).isEqualTo(getTraveller().getFirstName());
         assertThat(result.getLastName()).isEqualTo(getTraveller().getLastName());
         assertThat(result.getEmail()).isEqualTo(getTraveller().getEmail());
@@ -166,11 +172,12 @@ class TravellersServiceImplTest {
     void getTravellerByDocument() {
         TravellerDocumentDto travellerDocumentDto = TravellerDocumentParser.toDto(getTravellerDocument());
 
-        when(travellerRepository.findByDocument(anyString(), any(), anyString())).thenReturn(Optional.of(getTraveller()));
+        when(travellerRepository.findOne((Specification<Traveller>) null)).thenReturn(Optional.of(getTraveller()));
+        when(travellerSpecification.findOneByDocuments(anyString(), any(), anyString())).thenReturn(null);
 
         Traveller result = underTest.getTravellerByDocument(travellerDocumentDto);
 
-        verify(travellerRepository).findByDocument(travellerDocumentDto.documentNumber(), travellerDocumentDto.documentTypeEnum(), travellerDocumentDto.issuingCountry());
+        verify(travellerSpecification).findOneByDocuments(travellerDocumentDto.documentNumber(), travellerDocumentDto.documentTypeEnum(), travellerDocumentDto.issuingCountry());
         assertThat(result.getFirstName()).isEqualTo(getTraveller().getFirstName());
         assertThat(result.getLastName()).isEqualTo(getTraveller().getLastName());
         assertThat(result.getEmail()).isEqualTo(getTraveller().getEmail());
@@ -181,10 +188,11 @@ class TravellersServiceImplTest {
     void getTravellerByDocumentNotFound() {
         TravellerDocumentDto travellerDocumentDto = TravellerDocumentParser.toDto(getTravellerDocument());
 
-        when(travellerRepository.findByDocument(anyString(), any(), anyString())).thenReturn(Optional.empty());
+        when(travellerRepository.findOne((Specification<Traveller>) null)).thenReturn(Optional.empty());
+        when(travellerSpecification.findOneByDocuments(anyString(), any(), anyString())).thenReturn(null);
 
         assertThrows(TravellerNotFoundException.class, () -> underTest.getTravellerByDocument(travellerDocumentDto));
-        verify(travellerRepository).findByDocument(travellerDocumentDto.documentNumber(), travellerDocumentDto.documentTypeEnum(), travellerDocumentDto.issuingCountry());
+        verify(travellerSpecification).findOneByDocuments(travellerDocumentDto.documentNumber(), travellerDocumentDto.documentTypeEnum(), travellerDocumentDto.issuingCountry());
     }
 
     @Test

@@ -49,13 +49,10 @@ public class TravellersServiceImpl implements TravellersService {
 
     @Override
     public Traveller getTravellerByEmail(String email) {
-        Optional<Traveller> traveller;
         if (isEmail(email)) {
-            traveller = travellerRepository.findByEmailAndIsActiveTrue(email);
-        } else {
-            throw new InvalidEmailException("The email: " + email + " is invalid");
+            return travellerRepository.findByEmailAndIsActiveTrue(email).orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the email: " + email));
         }
-        return traveller.orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the email: " + email));
+        throw new InvalidEmailException("The email: " + email + " is invalid");
     }
 
     @Override

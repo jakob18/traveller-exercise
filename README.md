@@ -1,4 +1,4 @@
-# TRAVELLERS API
+# TRAVELLERS API [![CircleCI](https://dl.circleci.com/status-badge/img/gh/jakob18/traveller-exercise/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/jakob18/traveller-exercise/tree/main)
 
 # Notes
 - Because I used a MySQL database it is not possible to use: ``UNIQUE KEY unique_active_document (TRAVELLER_ID, IS_ACTIVE),`` only for ``Is_Active=true`` that means that I can't put a where clause just to the TRUE values, the solution is to use a TRIGGER, but I rather manage it on Java

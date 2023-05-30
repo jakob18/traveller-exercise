@@ -10,13 +10,18 @@ import lombok.Getter;
 import lombok.Setter;
 import org.exercise.travellers.enums.DocumentTypeEnum;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Date;
 
 
 @AllArgsConstructor
 @Getter
 @Setter
-public class CreateTravellerDto {
+public class CreateTravellerDto implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -6486128725624884889L;
 
     @NotBlank
     @Size(min = 1, max = 50)

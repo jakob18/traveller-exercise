@@ -3,6 +3,18 @@ spring:
     url: jdbc:mysql://live.db.server.org:3306/travellers
     password: SomePassword
     username: root
+    hikari:
+      maximum-pool-size: 64
+      data-source-properties:
+        cachePrepsStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+        rewriteBatchedStatements: true
+        cacheResultsSetMetadata: true
+        cacheServerConfiguration: true
+        elideSetAutoCommits: true
+        maintainTimeStats: false
   jpa:
     show-sql: false
     properties:
@@ -14,8 +26,19 @@ spring:
     schemas: travellers
     out-of-order: false
     locations: "classpath:/db/scripts"
-
-
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+    com:
+      zaxxer:
+        hikari:
+          HikariConfig: DEBUG
 ---
 spring:
   config:

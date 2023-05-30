@@ -28,34 +28,34 @@ import java.io.Serializable;
 @Table(name = "traveller_document")
 public class TravellerDocument implements Serializable {
 
-    public static final String SPEC_IS_ACTIVE = "isActive";
-    public static final String SPEC_DOCUMENT_TYPE = "documentType";
-    public static final String SPEC_DOCUMENT_NUMBER = "documentNumber";
-    public static final String SPEC_ISSUING_COUNTRY = "issuingCountry";
+	public static final String SPEC_IS_ACTIVE = "isActive";
+	public static final String SPEC_DOCUMENT_TYPE = "documentType";
+	public static final String SPEC_DOCUMENT_NUMBER = "documentNumber";
+	public static final String SPEC_ISSUING_COUNTRY = "issuingCountry";
 
-    @Serial
-    private static final long serialVersionUID = -8597868587019861846L;
+	@Serial
+	private static final long serialVersionUID = -8597868587019861846L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
-    @Column(nullable = false, updatable = false)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+	@GenericGenerator(name = "native")
+	@Column(nullable = false, updatable = false)
+	private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "DOCUMENT_TYPE", nullable = false, updatable = false)
-    private DocumentTypeEnum documentType;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "DOCUMENT_TYPE", nullable = false, updatable = false)
+	private DocumentTypeEnum documentType;
 
-    @Column(name = "DOCUMENT_NUMBER", nullable = false, updatable = false)
-    private String documentNumber;
+	@Column(name = "DOCUMENT_NUMBER", nullable = false, updatable = false)
+	private String documentNumber;
 
-    @Column(name = "ISSUING_COUNTRY", nullable = false, updatable = false)
-    private String issuingCountry;
+	@Column(name = "ISSUING_COUNTRY", nullable = false, updatable = false)
+	private String issuingCountry;
 
-    @Column(name = "IS_ACTIVE", nullable = false)
-    private boolean isActive;
+	@Column(name = "IS_ACTIVE", nullable = false)
+	private boolean isActive;
 
-    @ManyToOne
-    @JoinColumn(name = "TRAVELLER_ID", referencedColumnName = "id", nullable = false)
-    private Traveller traveller;
+	@ManyToOne
+	@JoinColumn(name = "TRAVELLER_ID", referencedColumnName = "id", nullable = false)
+	private Traveller traveller;
 }

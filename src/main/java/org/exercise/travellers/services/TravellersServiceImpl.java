@@ -25,139 +25,146 @@ import java.util.Optional;
 @Slf4j
 public class TravellersServiceImpl implements TravellersService {
 
-    private final TravellersDocumentService travellersDocumentService;
-    private final TravellerRepository travellerRepository;
-    private final TravellerSpecification travellerSpecification;
+	private final TravellersDocumentService travellersDocumentService;
+	private final TravellerRepository travellerRepository;
+	private final TravellerSpecification travellerSpecification;
 
-    @Override
-    public Traveller getTraveller(String searchValue) {
-        Optional<Traveller> traveller = Optional.empty();
+	@Override
+	public Traveller getTraveller(String searchValue) {
+		Optional<Traveller> traveller = Optional.empty();
 
-        if (isEmail(searchValue)) {
-            traveller = travellerRepository.findByEmailAndIsActiveTrue(searchValue);
-        } else if (isMobile(searchValue)) {
-            traveller = travellerRepository.findByMobileNumberAndIsActiveTrue(Integer.parseInt(searchValue));
-        } else if (isDocument(searchValue)) {
-            // I assume that the received document comes on a simple string "DOCUMENTTYPE+DOCUMENTNUMBER"
-            DocumentTypeEnum documentType = getDocumentType(searchValue);
-            String documentNumber = searchValue.substring(documentType.toString().length());
-            traveller = travellerRepository.findOne(travellerSpecification.findOneByDocuments(documentNumber, documentType));
-        }
+		if (isEmail(searchValue)) {
+			traveller = travellerRepository.findByEmailAndIsActiveTrue(searchValue);
+		} else if (isMobile(searchValue)) {
+			traveller = travellerRepository.findByMobileNumberAndIsActiveTrue(Integer.parseInt(searchValue));
+		} else if (isDocument(searchValue)) {
+			// I assume that the received document comes on a simple string "DOCUMENTTYPE+DOCUMENTNUMBER"
+			DocumentTypeEnum documentType = getDocumentType(searchValue);
+			String documentNumber = getDocumentNumber(documentType, searchValue);
+			traveller = travellerRepository.findOne(travellerSpecification.findOneByDocuments(documentNumber, documentType));
+		}
 
-        return traveller.orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the value: " + searchValue));
-    }
+		return traveller.orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the value: " + searchValue));
+	}
 
-    @Override
-    public Traveller getTravellerByEmail(String email) {
-        if (isEmail(email)) {
-            return travellerRepository.findByEmailAndIsActiveTrue(email).orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the email: " + email));
-        }
-        throw new InvalidEmailException("The email: " + email + " is invalid");
-    }
+	@Override
+	public Traveller getTravellerByEmail(String email) {
+		if (isEmail(email)) {
+			return travellerRepository.findByEmailAndIsActiveTrue(email).orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the email: " + email));
+		}
+		throw new InvalidEmailException("The email: " + email + " is invalid");
+	}
 
-    @Override
-    public Traveller getTravellerByMobile(int mobile) {
-        return travellerRepository.findByMobileNumberAndIsActiveTrue(mobile).orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the mobile number: " + mobile));
-    }
+	@Override
+	public Traveller getTravellerByMobile(int mobile) {
+		return travellerRepository.findByMobileNumberAndIsActiveTrue(mobile).orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the mobile number: " + mobile));
+	}
 
-    @Override
-    public Traveller getTravellerByDocument(TravellerDocumentDto document) {
-        return travellerRepository
-                .findOne(travellerSpecification.findOneByDocuments(document.documentNumber(), document.documentTypeEnum(), document.issuingCountry()))
-                .orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the document: " + document));
-    }
+	@Override
+	public Traveller getTravellerByDocument(TravellerDocumentDto document) {
+		return travellerRepository
+				.findOne(travellerSpecification.findOneByDocuments(document.documentNumber(), document.documentTypeEnum(), document.issuingCountry()))
+				.orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the document: " + document));
+	}
 
-    private boolean isEmail(String value) {
-        return value.matches("\\b[\\w.%-]+@[-.\\w]+\\.[A-Za-z]{2,4}\\b");
-    }
+	private boolean isEmail(String value) {
+		return value.matches("\\b[\\w.%-]+@[-.\\w]+\\.[A-Za-z]{2,4}\\b");
+	}
 
-    private boolean isMobile(String value) {
-        return value.matches("\\+?[0-9]{7,15}");
-    }
+	private boolean isMobile(String value) {
+		return value.matches("\\+?\\d{7,15}");
+	}
 
-    private boolean isDocument(String value) {
-        return Arrays.stream(DocumentTypeEnum.values())
-                .anyMatch(documentTypeEnum -> value.startsWith(documentTypeEnum.toString()));
-    }
+	private boolean isDocument(String value) {
+		return Arrays.stream(DocumentTypeEnum.values())
+				.anyMatch(documentTypeEnum -> value.startsWith(documentTypeEnum.toString()));
+	}
 
-    private DocumentTypeEnum getDocumentType(String value) {
-        return Arrays.stream(DocumentTypeEnum.values())
-                .filter(documentType -> value.startsWith(documentType.toString()))
-                .findFirst()
-                .orElse(null);
-    }
+	private DocumentTypeEnum getDocumentType(String value) {
+		return Arrays.stream(DocumentTypeEnum.values())
+				.filter(documentType -> value.startsWith(documentType.toString()))
+				.findFirst()
+				.orElse(null);
+	}
 
-    @Override
-    public Traveller addTraveller(CreateTravellerDto createTravellerDto) {
-        checkExistingEmail(createTravellerDto.getEmail());
-        checkExistingMobileNumber(createTravellerDto.getMobileNumber());
-        travellersDocumentService.checkExistingDocument(createTravellerDto.getDocumentTypeEnum(), createTravellerDto.getDocumentNumber(), createTravellerDto.getIssuingCountry());
-        Traveller traveller = createTraveller(createTravellerDto);
-        return travellerRepository.findById(traveller.getId()).orElseThrow(() -> new TravellerNotFoundException("Couldn't find the new traveller with the Id: " + traveller.getId()));
-    }
+	private String getDocumentNumber(DocumentTypeEnum documentType, String value) {
+		if (documentType != null) {
+			return value.substring(documentType.toString().length());
+		}
+		return "";
+	}
 
-    private void checkExistingEmail(String email) {
-        if (travellerRepository.existsByEmail(email)) {
-            throw new DuplicatedResourcesException("The email: " + email + " already exists");
-        }
-    }
+	@Override
+	public Traveller addTraveller(CreateTravellerDto createTravellerDto) {
+		checkExistingEmail(createTravellerDto.getEmail());
+		checkExistingMobileNumber(createTravellerDto.getMobileNumber());
+		travellersDocumentService.checkExistingDocument(createTravellerDto.getDocumentTypeEnum(), createTravellerDto.getDocumentNumber(), createTravellerDto.getIssuingCountry());
+		Traveller traveller = createTraveller(createTravellerDto);
+		return travellerRepository.findById(traveller.getId()).orElseThrow(() -> new TravellerNotFoundException("Couldn't find the new traveller with the Id: " + traveller.getId()));
+	}
 
-    private void checkExistingMobileNumber(int mobileNumber) {
-        if (travellerRepository.existsByMobileNumber(mobileNumber)) {
-            throw new DuplicatedResourcesException("The Mobile Number: " + mobileNumber + " already exists");
-        }
-    }
+	private void checkExistingEmail(String email) {
+		if (travellerRepository.existsByEmail(email)) {
+			throw new DuplicatedResourcesException("The email: " + email + " already exists");
+		}
+	}
 
-    private Traveller createTraveller(CreateTravellerDto createTravellerDto) {
-        Traveller savedTraveller = travellerRepository.save(TravellerParser.toEntity(createTravellerDto));
-        travellersDocumentService.createTravelerDocument(savedTraveller, createTravellerDto);
-        return savedTraveller;
-    }
+	private void checkExistingMobileNumber(int mobileNumber) {
+		if (travellerRepository.existsByMobileNumber(mobileNumber)) {
+			throw new DuplicatedResourcesException("The Mobile Number: " + mobileNumber + " already exists");
+		}
+	}
 
-    @Override
-    public Traveller updateTraveller(TravellerDto travellerDto) {
-        Optional<Traveller> entity = travellerRepository.findById(travellerDto.id());
-        Traveller editTraveller = checkUpdateTraveller(entity, travellerDto.id());
-        travellersDocumentService.updateTravellerDocument(editTraveller, travellerDto);
-        Traveller updatedTraveller = updateTraveller(editTraveller, travellerDto);
-        return travellerRepository.findById(updatedTraveller.getId()).orElseThrow(() -> new TravellerNotFoundException("Couldn't find the traveller with the Id: " + updatedTraveller.getId()));
-    }
+	private Traveller createTraveller(CreateTravellerDto createTravellerDto) {
+		Traveller savedTraveller = travellerRepository.save(TravellerParser.toEntity(createTravellerDto));
+		travellersDocumentService.createTravelerDocument(savedTraveller, createTravellerDto);
+		return savedTraveller;
+	}
 
-    private Traveller checkUpdateTraveller(Optional<Traveller> traveller, Long id) {
-        if (traveller.isEmpty()) {
-            throw new TravellerNotFoundException("The traveller with the Id: " + id + " was not found");
-        }
+	@Override
+	public Traveller updateTraveller(TravellerDto travellerDto) {
+		Optional<Traveller> entity = travellerRepository.findById(travellerDto.id());
+		Traveller editTraveller = checkUpdateTraveller(entity, travellerDto.id());
+		travellersDocumentService.updateTravellerDocument(editTraveller, travellerDto);
+		Traveller updatedTraveller = updateTraveller(editTraveller, travellerDto);
+		return travellerRepository.findById(updatedTraveller.getId()).orElseThrow(() -> new TravellerNotFoundException("Couldn't find the traveller with the Id: " + updatedTraveller.getId()));
+	}
 
-        Traveller checkTraveller = traveller.get();
-        if (!checkTraveller.isActive()) {
-            throw new TravellerDeactivatedException("The traveller with the Id: " + id + " is not active");
-        }
+	private Traveller checkUpdateTraveller(Optional<Traveller> traveller, Long id) {
+		if (traveller.isEmpty()) {
+			throw new TravellerNotFoundException("The traveller with the Id: " + id + " was not found");
+		}
 
-        return checkTraveller;
-    }
+		Traveller checkTraveller = traveller.get();
+		if (!checkTraveller.isActive()) {
+			throw new TravellerDeactivatedException("The traveller with the Id: " + id + " is not active");
+		}
 
-    private Traveller updateTraveller(Traveller oldTravellerData, TravellerDto newTravellerData) {
-        try {
-            oldTravellerData.setFirstName(sqlInjectionPrevention(newTravellerData.firstName()));
-            oldTravellerData.setLastName(sqlInjectionPrevention(newTravellerData.lastName()));
-            oldTravellerData.setBirthDate(newTravellerData.birthDate());
-            oldTravellerData.setEmail(sqlInjectionPrevention(newTravellerData.email()));
-            oldTravellerData.setMobileNumber(newTravellerData.mobileNumber());
-            return travellerRepository.save(oldTravellerData);
-        } catch (Exception ex) {
-            throw new DuplicatedResourcesException(ex.getLocalizedMessage());
-        }
-    }
+		return checkTraveller;
+	}
 
-    private String sqlInjectionPrevention(String value) {
-        return value.replaceAll(SqlInjectionRegex.getRegex(), "");
-    }
+	private Traveller updateTraveller(Traveller oldTravellerData, TravellerDto newTravellerData) {
+		try {
+			oldTravellerData.setFirstName(sqlInjectionPrevention(newTravellerData.firstName()));
+			oldTravellerData.setLastName(sqlInjectionPrevention(newTravellerData.lastName()));
+			oldTravellerData.setBirthDate(newTravellerData.birthDate());
+			oldTravellerData.setEmail(sqlInjectionPrevention(newTravellerData.email()));
+			oldTravellerData.setMobileNumber(newTravellerData.mobileNumber());
+			return travellerRepository.save(oldTravellerData);
+		} catch (Exception ex) {
+			throw new DuplicatedResourcesException(ex.getLocalizedMessage());
+		}
+	}
 
-    @Override
-    public void deleteTraveller(Long id) {
-        Traveller deleteTraveller = travellerRepository.findByIdAndIsActiveTrue(id).orElseThrow(() -> new TravellerNotFoundException("Couldn't find the traveller with the Id: " + id + " or is already deleted"));
-        travellersDocumentService.disableAllDocuments(deleteTraveller);
-        deleteTraveller.setActive(false);
-        travellerRepository.save(deleteTraveller);
-    }
+	private String sqlInjectionPrevention(String value) {
+		return value.replaceAll(SqlInjectionRegex.getRegex(), "");
+	}
+
+	@Override
+	public void deleteTraveller(Long id) {
+		Traveller deleteTraveller = travellerRepository.findByIdAndIsActiveTrue(id).orElseThrow(() -> new TravellerNotFoundException("Couldn't find the traveller with the Id: " + id + " or is already deleted"));
+		travellersDocumentService.disableAllDocuments(deleteTraveller);
+		deleteTraveller.setActive(false);
+		travellerRepository.save(deleteTraveller);
+	}
 }

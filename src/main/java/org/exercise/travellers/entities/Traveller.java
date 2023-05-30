@@ -28,43 +28,43 @@ import java.util.List;
 @Table(name = "traveller")
 public class Traveller implements Serializable {
 
-    public static final String SPEC_IS_ACTIVE = "isActive";
+	public static final String SPEC_IS_ACTIVE = "isActive";
 
-    @Serial
-    private static final long serialVersionUID = -7880395848287219784L;
+	@Serial
+	private static final long serialVersionUID = -7880395848287219784L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
-    @Column(nullable = false, updatable = false)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+	@GenericGenerator(name = "native")
+	@Column(nullable = false, updatable = false)
+	private Long id;
 
-    @Column(name = "FIRST_NAME", nullable = false)
-    private String firstName;
+	@Column(name = "FIRST_NAME", nullable = false)
+	private String firstName;
 
-    @Column(name = "LAST_NAME", nullable = false)
-    private String lastName;
+	@Column(name = "LAST_NAME", nullable = false)
+	private String lastName;
 
-    @Column(name = "DATE_OF_BIRTH", nullable = false)
-    private Date birthDate;
+	@Column(name = "DATE_OF_BIRTH", nullable = false)
+	private Date birthDate;
 
-    @Column(name = "EMAIL", nullable = false)
-    private String email;
+	@Column(name = "EMAIL", nullable = false)
+	private String email;
 
-    @Column(name = "MOBILE_NUMBER", nullable = false)
-    private int mobileNumber;
+	@Column(name = "MOBILE_NUMBER", nullable = false)
+	private int mobileNumber;
 
-    @Column(name = "IS_ACTIVE", nullable = false)
-    private boolean isActive;
+	@Column(name = "IS_ACTIVE", nullable = false)
+	private boolean isActive;
 
-    @OneToMany(mappedBy = "traveller", fetch = FetchType.EAGER)
-    private List<TravellerDocument> travellerDocuments = new ArrayList<>();
+	@OneToMany(mappedBy = "traveller", fetch = FetchType.EAGER)
+	private List<TravellerDocument> travellerDocuments = new ArrayList<>();
 
-    public TravellerDocument getActiveDocument() {
-        return travellerDocuments.stream()
-                .filter(TravellerDocument::isActive)
-                .findFirst()
-                .orElse(null);
-    }
+	public TravellerDocument getActiveDocument() {
+		return travellerDocuments.stream()
+				.filter(TravellerDocument::isActive)
+				.findFirst()
+				.orElse(null);
+	}
 
 }

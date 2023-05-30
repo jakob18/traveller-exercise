@@ -1,7 +1,6 @@
 package org.exercise.travellers.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Digits;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.exercise.travellers.dto.CreateTravellerDto;
@@ -25,49 +24,49 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class TravellerController {
 
-    private final TravellersService travellersService;
+	private final TravellersService travellersService;
 
-    // This was the first approach because the exercise didn't specify if it should be one get for all types or different gets
-    @GetMapping()
-    public TravellerDto getTraveller(@RequestParam String searchValue) {
-        log.info("Search for the traveller with: " + searchValue);
-        return TravellerParser.toDto(travellersService.getTraveller(searchValue));
-    }
+	// This was the first approach because the exercise didn't specify if it should be one get for all types or different gets
+	@GetMapping()
+	public TravellerDto getTraveller(@RequestParam String searchValue) {
+		log.info("Search for the traveller with: " + searchValue);
+		return TravellerParser.toDto(travellersService.getTraveller(searchValue));
+	}
 
-    // Better implementation different get for each case
-    @GetMapping("/by_email")
-    public TravellerDto getTravellerByEmail(@RequestParam String email) {
-        log.info("Search for the traveller by the email: " + email);
-        return TravellerParser.toDto(travellersService.getTravellerByEmail(email));
-    }
+	// Better implementation different get for each case
+	@GetMapping("/by_email")
+	public TravellerDto getTravellerByEmail(@RequestParam String email) {
+		log.info("Search for the traveller by the email: " + email);
+		return TravellerParser.toDto(travellersService.getTravellerByEmail(email));
+	}
 
-    @GetMapping("/by_mobile")
-    public TravellerDto getTravellerByMobile(@RequestParam int mobile) {
-        log.info("Search for the traveller by the mobile: " + mobile);
-        return TravellerParser.toDto(travellersService.getTravellerByMobile(mobile));
-    }
+	@GetMapping("/by_mobile")
+	public TravellerDto getTravellerByMobile(@RequestParam int mobile) {
+		log.info("Search for the traveller by the mobile: " + mobile);
+		return TravellerParser.toDto(travellersService.getTravellerByMobile(mobile));
+	}
 
-    @GetMapping("/by_document")
-    public TravellerDto getTravellerByDocument(@Valid @RequestBody TravellerDocumentDto document) {
-        log.info("Search for the traveller by the Document: " + document);
-        return TravellerParser.toDto(travellersService.getTravellerByDocument(document));
-    }
+	@GetMapping("/by_document")
+	public TravellerDto getTravellerByDocument(@Valid @RequestBody TravellerDocumentDto document) {
+		log.info("Search for the traveller by the Document: " + document);
+		return TravellerParser.toDto(travellersService.getTravellerByDocument(document));
+	}
 
-    @PostMapping
-    public TravellerDto addTraveller(@Valid @RequestBody CreateTravellerDto createTravellerDto) {
-        log.info("Add traveller with: " + createTravellerDto.getFirstName());
-        return TravellerParser.toDto(travellersService.addTraveller(createTravellerDto));
-    }
+	@PostMapping
+	public TravellerDto addTraveller(@Valid @RequestBody CreateTravellerDto createTravellerDto) {
+		log.info("Add traveller with: " + createTravellerDto.getFirstName());
+		return TravellerParser.toDto(travellersService.addTraveller(createTravellerDto));
+	}
 
-    @PutMapping
-    public TravellerDto updateTraveller(@Valid @RequestBody TravellerDto updateTravellerDto) {
-        log.info("Update traveller with: " + updateTravellerDto.firstName());
-        return TravellerParser.toDto(travellersService.updateTraveller(updateTravellerDto));
-    }
+	@PutMapping
+	public TravellerDto updateTraveller(@Valid @RequestBody TravellerDto updateTravellerDto) {
+		log.info("Update traveller with: " + updateTravellerDto.firstName());
+		return TravellerParser.toDto(travellersService.updateTraveller(updateTravellerDto));
+	}
 
-    @DeleteMapping("/{id}")
-    public void deleteTraveller(@PathVariable Long id) {
-        log.info("Deleting traveller with id: " + id);
-        travellersService.deleteTraveller(id);
-    }
+	@DeleteMapping("/{id}")
+	public void deleteTraveller(@PathVariable Long id) {
+		log.info("Deleting traveller with id: " + id);
+		travellersService.deleteTraveller(id);
+	}
 }

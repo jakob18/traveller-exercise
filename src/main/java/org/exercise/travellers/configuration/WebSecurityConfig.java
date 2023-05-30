@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,30 +23,31 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-    private final PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
 
-    @Value("${spring.security.user.name}")
-    private String username;
+	@Value("${spring.security.user.name}")
+	private String username;
 
-    @Value("${spring.security.user.password}")
-    private String password;
+	@Value("${spring.security.user.password}")
+	private String password;
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails service = User.withUsername(username)
-                .password(passwordEncoder.encode(password))
-                .roles("SERVICE")
-                .build();
-        return new InMemoryUserDetailsManager(service);
-    }
+	@Bean
+	public UserDetailsService userDetailsService() {
+		UserDetails service = User.withUsername(username)
+				.password(passwordEncoder.encode(password))
+				.roles("SERVICE")
+				.build();
+		return new InMemoryUserDetailsManager(service);
+	}
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.csrf().disable().cors().and()
-                .sessionManagement().sessionCreationPolicy(STATELESS)
-                .and().authorizeHttpRequests().anyRequest().authenticated()
-                .and().httpBasic()
-                .and().build();
-
-    }
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		return http
+				.csrf(AbstractHttpConfigurer::disable)
+				// .cors(AbstractHttpConfigurer::disable)
+				.sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+				.authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
+				.httpBasic(Customizer.withDefaults())
+				.build();
+	}
 }

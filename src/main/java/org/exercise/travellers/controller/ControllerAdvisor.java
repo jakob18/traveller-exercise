@@ -20,37 +20,37 @@ import java.util.Map;
 @ControllerAdvice
 public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(TravellerNotFoundException.class)
-    public ResponseEntity<Object> handleTravellerNotFoundException(TravellerNotFoundException ex) {
-        return new ResponseEntity<>(createResponse(ex), HttpStatus.NO_CONTENT);
-    }
+	@ExceptionHandler(TravellerNotFoundException.class)
+	public ResponseEntity<Object> handleTravellerNotFoundException(TravellerNotFoundException ex) {
+		return new ResponseEntity<>(createResponse(ex), HttpStatus.NO_CONTENT);
+	}
 
-    @ExceptionHandler(DuplicatedResourcesException.class)
-    public ResponseEntity<Object> handleDuplicatedResourcesException(DuplicatedResourcesException ex) {
-        return new ResponseEntity<>(createResponse(ex), HttpStatus.CONFLICT);
-    }
+	@ExceptionHandler(DuplicatedResourcesException.class)
+	public ResponseEntity<Object> handleDuplicatedResourcesException(DuplicatedResourcesException ex) {
+		return new ResponseEntity<>(createResponse(ex), HttpStatus.CONFLICT);
+	}
 
-    @ExceptionHandler(TravellerDeactivatedException.class)
-    public ResponseEntity<Object> handleTravellerDeactivatedException(TravellerDeactivatedException ex) {
-        return new ResponseEntity<>(createResponse(ex), HttpStatus.UNPROCESSABLE_ENTITY);
-    }
+	@ExceptionHandler(TravellerDeactivatedException.class)
+	public ResponseEntity<Object> handleTravellerDeactivatedException(TravellerDeactivatedException ex) {
+		return new ResponseEntity<>(createResponse(ex), HttpStatus.UNPROCESSABLE_ENTITY);
+	}
 
-    @ExceptionHandler(InvalidEmailException.class)
-    public ResponseEntity<Object> handleInvalidEmailException(InvalidEmailException ex) {
-        return new ResponseEntity<>(createResponse(ex), HttpStatus.BAD_REQUEST);
-    }
+	@ExceptionHandler(InvalidEmailException.class)
+	public ResponseEntity<Object> handleInvalidEmailException(InvalidEmailException ex) {
+		return new ResponseEntity<>(createResponse(ex), HttpStatus.BAD_REQUEST);
+	}
 
-    private Map<String, Object> createResponse(RuntimeException ex) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
-        return body;
-    }
+	private Map<String, Object> createResponse(RuntimeException ex) {
+		Map<String, Object> body = new LinkedHashMap<>();
+		body.put("timestamp", LocalDateTime.now());
+		body.put("message", ex.getMessage());
+		return body;
+	}
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<List<String>> validationErrors(ConstraintViolationException e) {
-        List<String> errors = new ArrayList<>(e.getConstraintViolations().size());
-        e.getConstraintViolations().forEach( constraintViolation -> errors.add(constraintViolation.getPropertyPath() + " : " + constraintViolation.getMessage()));
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-    }
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<List<String>> validationErrors(ConstraintViolationException e) {
+		List<String> errors = new ArrayList<>(e.getConstraintViolations().size());
+		e.getConstraintViolations().forEach(constraintViolation -> errors.add(constraintViolation.getPropertyPath() + " : " + constraintViolation.getMessage()));
+		return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+	}
 }

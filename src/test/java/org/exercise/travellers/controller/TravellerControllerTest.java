@@ -195,11 +195,13 @@ class TravellerControllerTest {
 
     @Test
     void getTravellerByDocument() throws Exception {
-        when(travellersService.getTravellerByDocument(any())).thenReturn(getEntity());
+        when(travellersService.getTravellerByDocument(any(), anyString(), anyString())).thenReturn(getEntity());
 
         final ResultActions result = this.mockMvc.perform(
                 get(CONTROLLER_PATH + "/by_document")
-                        .content(objectMapper.writeValueAsString(getTravellerDocumentDto()))
+                        .param("documentType", getTravellerDocumentDto().documentTypeEnum().toString())
+                        .param("documentNumber", getTravellerDocumentDto().documentNumber())
+                        .param("issuingCountry", getTravellerDocumentDto().issuingCountry())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -228,11 +230,13 @@ class TravellerControllerTest {
 
     @Test
     void getTravellerByDocumentInvalid() throws Exception {
-        when(travellersService.getTravellerByDocument(any())).thenThrow(new TravellerNotFoundException("The traveller was not found"));
+        when(travellersService.getTravellerByDocument(any(), anyString(), anyString())).thenThrow(new TravellerNotFoundException("The traveller was not found"));
 
         final ResultActions result = this.mockMvc.perform(
                         get(CONTROLLER_PATH + "/by_document")
-                                .content(objectMapper.writeValueAsString(getTravellerDocumentDto()))
+                                .param("documentType", getTravellerDocumentDto().documentTypeEnum().toString())
+                                .param("documentNumber", getTravellerDocumentDto().documentNumber())
+                                .param("issuingCountry", getTravellerDocumentDto().issuingCountry())
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())

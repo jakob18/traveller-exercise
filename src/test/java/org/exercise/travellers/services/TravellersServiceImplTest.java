@@ -175,7 +175,7 @@ class TravellersServiceImplTest {
         when(travellerRepository.findOne((Specification<Traveller>) null)).thenReturn(Optional.of(getTraveller()));
         when(travellerSpecification.findOneByDocuments(anyString(), any(), anyString())).thenReturn(null);
 
-        Traveller result = underTest.getTravellerByDocument(travellerDocumentDto);
+        Traveller result = underTest.getTravellerByDocument(travellerDocumentDto.documentTypeEnum(), travellerDocumentDto.documentNumber(), travellerDocumentDto.issuingCountry());
 
         verify(travellerSpecification).findOneByDocuments(travellerDocumentDto.documentNumber(), travellerDocumentDto.documentTypeEnum(), travellerDocumentDto.issuingCountry());
         assertThat(result.getFirstName()).isEqualTo(getTraveller().getFirstName());
@@ -191,7 +191,7 @@ class TravellersServiceImplTest {
         when(travellerRepository.findOne((Specification<Traveller>) null)).thenReturn(Optional.empty());
         when(travellerSpecification.findOneByDocuments(anyString(), any(), anyString())).thenReturn(null);
 
-        assertThrows(TravellerNotFoundException.class, () -> underTest.getTravellerByDocument(travellerDocumentDto));
+        assertThrows(TravellerNotFoundException.class, () -> underTest.getTravellerByDocument(travellerDocumentDto.documentTypeEnum(), travellerDocumentDto.documentNumber(), travellerDocumentDto.issuingCountry()));
         verify(travellerSpecification).findOneByDocuments(travellerDocumentDto.documentNumber(), travellerDocumentDto.documentTypeEnum(), travellerDocumentDto.issuingCountry());
     }
 
@@ -218,8 +218,9 @@ class TravellersServiceImplTest {
     @Test
     void addTravellerExistingEmail() {
         when(travellerRepository.existsByEmail(anyString())).thenReturn(true);
+        CreateTravellerDto createTravellerDto = getCreateTravellerDto();
 
-        assertThrows(DuplicatedResourcesException.class, () -> underTest.addTraveller(getCreateTravellerDto()));
+        assertThrows(DuplicatedResourcesException.class, () -> underTest.addTraveller(createTravellerDto));
 
         verify(travellerRepository).existsByEmail("bruno.jacob@portugal.pt");
         verify(travellerRepository, times(0)).existsByMobileNumber(anyInt());
@@ -231,8 +232,9 @@ class TravellersServiceImplTest {
     void addTravellerExistingMobile() {
         when(travellerRepository.existsByEmail(anyString())).thenReturn(false);
         when(travellerRepository.existsByMobileNumber(anyInt())).thenReturn(true);
+        CreateTravellerDto createTravellerDto = getCreateTravellerDto();
 
-        assertThrows(DuplicatedResourcesException.class, () -> underTest.addTraveller(getCreateTravellerDto()));
+        assertThrows(DuplicatedResourcesException.class, () -> underTest.addTraveller(createTravellerDto));
 
         verify(travellerRepository).existsByEmail("bruno.jacob@portugal.pt");
         verify(travellerRepository).existsByMobileNumber(931234567);
@@ -263,8 +265,9 @@ class TravellersServiceImplTest {
     @Test
     void updateTravellerNotFound() {
         when(travellerRepository.findById(any())).thenReturn(Optional.empty());
+        TravellerDto travellerDto = getTravellerDto();
 
-        assertThrows(TravellerNotFoundException.class, () -> underTest.updateTraveller(getTravellerDto()));
+        assertThrows(TravellerNotFoundException.class, () -> underTest.updateTraveller(travellerDto));
         verify(travellerRepository).findById(1L);
     }
 
@@ -273,8 +276,9 @@ class TravellersServiceImplTest {
         Traveller entity = getTraveller();
         entity.setActive(false);
         when(travellerRepository.findById(any())).thenReturn(Optional.of(entity));
+        TravellerDto travellerDto = getTravellerDto();
 
-        assertThrows(TravellerDeactivatedException.class, () -> underTest.updateTraveller(getTravellerDto()));
+        assertThrows(TravellerDeactivatedException.class, () -> underTest.updateTraveller(travellerDto));
         verify(travellerRepository).findById(1L);
     }
 

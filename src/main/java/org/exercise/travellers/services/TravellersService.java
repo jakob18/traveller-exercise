@@ -1,9 +1,9 @@
 package org.exercise.travellers.services;
 
 import org.exercise.travellers.dto.CreateTravellerDto;
-import org.exercise.travellers.dto.TravellerDocumentDto;
 import org.exercise.travellers.dto.TravellerDto;
 import org.exercise.travellers.entities.Traveller;
+import org.exercise.travellers.enums.DocumentTypeEnum;
 
 public interface TravellersService {
 
@@ -21,7 +21,7 @@ public interface TravellersService {
 
 	Traveller getTravellerByMobile(int mobile);
 
-	Traveller getTravellerByDocument(TravellerDocumentDto document);
+	Traveller getTravellerByDocument(DocumentTypeEnum documentTypeEnum, String documentNumber, String issuingCountry);
 
 	/**
 	 * Create Traveller, where the following data should be accepted:

@@ -3,7 +3,6 @@ package org.exercise.travellers.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.exercise.travellers.dto.CreateTravellerDto;
-import org.exercise.travellers.dto.TravellerDocumentDto;
 import org.exercise.travellers.dto.TravellerDto;
 import org.exercise.travellers.entities.Traveller;
 import org.exercise.travellers.enums.DocumentTypeEnum;
@@ -61,10 +60,10 @@ public class TravellersServiceImpl implements TravellersService {
 	}
 
 	@Override
-	public Traveller getTravellerByDocument(TravellerDocumentDto document) {
+	public Traveller getTravellerByDocument(DocumentTypeEnum documentTypeEnum, String documentNumber, String issuingCountry) {
 		return travellerRepository
-				.findOne(travellerSpecification.findOneByDocuments(document.documentNumber(), document.documentTypeEnum(), document.issuingCountry()))
-				.orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the document: " + document));
+				.findOne(travellerSpecification.findOneByDocuments(documentNumber, documentTypeEnum, issuingCountry))
+				.orElseThrow(() -> new TravellerNotFoundException("There isn't an active Traveller with the Document Type: " + documentTypeEnum  + " - Document Number: " + documentNumber + " - Issuing Country: " + issuingCountry));
 	}
 
 	private boolean isEmail(String value) {

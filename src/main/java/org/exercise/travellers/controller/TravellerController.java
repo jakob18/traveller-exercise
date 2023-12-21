@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.exercise.travellers.dto.CreateTravellerDto;
 import org.exercise.travellers.dto.TravellerDocumentDto;
 import org.exercise.travellers.dto.TravellerDto;
+import org.exercise.travellers.enums.DocumentTypeEnum;
 import org.exercise.travellers.parser.TravellerParser;
 import org.exercise.travellers.services.TravellersService;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,9 +48,9 @@ public class TravellerController {
 	}
 
 	@GetMapping("/by_document")
-	public TravellerDto getTravellerByDocument(@Valid @RequestBody TravellerDocumentDto document) {
-		log.info("Search for the traveller by the Document: " + document);
-		return TravellerParser.toDto(travellersService.getTravellerByDocument(document));
+	public TravellerDto getTravellerByDocument(@Valid @RequestParam("documentType") DocumentTypeEnum documentTypeEnum, @Valid @RequestParam("documentNumber") String documentNumber, @Valid @RequestParam("issuingCountry") String issuingCountry) {
+		log.info("Search for the traveller by the Document. Document Type: {} - Document Number: {} - Issuing Country: {}", documentTypeEnum, documentNumber, issuingCountry);
+		return TravellerParser.toDto(travellersService.getTravellerByDocument(documentTypeEnum, documentNumber, issuingCountry));
 	}
 
 	@PostMapping
